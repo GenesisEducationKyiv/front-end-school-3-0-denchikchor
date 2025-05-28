@@ -1,7 +1,5 @@
 # ADR: Implement Adaptive UI and ARIA Attributes for Accessibility
 
-## Context
-
 The current interface of the music application is built on React components, but:
 
 - Users with disabilities (e.g., low vision or non-visual) face difficulties with keyboard navigation and screen readers.
@@ -10,7 +8,7 @@ The current interface of the music application is built on React components, but
 
 Lack of a clear accessibility strategy results in degraded UX for some users and risks non-compliance with WCAG standards.
 
-### Decision
+## Decision
 
 We will implement a comprehensive accessibility initiative consisting of two main parts:
 
@@ -33,15 +31,15 @@ We will implement a comprehensive accessibility initiative consisting of two mai
 - Ensure accessible form fields using `<label>` and `aria-describedby` for error messages.
 - Apply `aria-checked`, `aria-expanded`, and `aria-selected` on relevant components (checkboxes, accordions, tabs).
 
-#### Rationale
+## Rationale
 
 - Inclusive Design. Accessibility is a core aspect of quality UX—users of all abilities should have equal access to features.
 - Standards Compliance. Meeting WCAG reduces legal risks and improves brand reputation.
 - Consistency. A centralized ARIA and adaptive UI approach ensures uniform accessibility across the application.
 
-##### Status: Proposed
+## Status: Proposed
 
-###### Consequences
+## Consequences
 
 **Positive**
 
