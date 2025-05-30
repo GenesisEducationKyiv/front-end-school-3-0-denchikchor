@@ -24,7 +24,7 @@ We will implement a comprehensive accessibility initiative consisting of two mai
 - Use semantic HTML elements (`<button>`, `<nav>`, `<main>`, `<header>`, `<footer>`) instead of `<div>` for interactive regions.
 - Add ARIA roles and labels:
 
-    - `role="button"` and `aria-label="Play track"` for icon-only buttons.
+    - `aria-label="Play track"` for icon-only buttons.
     - `aria-hidden="true"` for purely decorative elements.
     - `aria-live="polite"` for dynamic announcements (e.g., track changes).
 
