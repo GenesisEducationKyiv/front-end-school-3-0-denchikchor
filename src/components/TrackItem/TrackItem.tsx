@@ -1,10 +1,10 @@
-import React from 'react';
-import styles from './TrackItem.module.css';
-import { Track } from '../../features/tracks/types';
-import TrackCover from './TrackCover';
-import TrackInfo from './TrackInfo';
-import TrackPlayer from './TrackPlayer';
-import TrackActions from './TrackActions';
+import React from "react";
+import styles from "./TrackItem.module.css";
+import { Track } from "../../features/tracks/types";
+import TrackCover from "./TrackCover";
+import TrackInfo from "./TrackInfo";
+import TrackPlayer from "./TrackPlayer";
+import TrackActions from "./TrackActions";
 
 interface Props {
   track: Track;

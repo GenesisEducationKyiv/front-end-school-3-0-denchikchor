@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
 
-import type { RootState } from '../../store';
-import { fetchGenres } from '../../features/genres/genresSlice';
-import styles from './GenreSelector.module.css';
-import { useAppDispatch } from '../../hooks/redux-hook';
+import type { RootState } from "../../store";
+import { fetchGenres } from "../../features/genres/genresSlice";
+import styles from "./GenreSelector.module.css";
+import { useAppDispatch } from "../../hooks/redux-hook";
 
 interface Props {
   selected: string[];
@@ -16,7 +16,11 @@ const GenreSelector: React.FC<Props> = ({ selected, onChange }) => {
   const genres = useSelector((state: RootState) => state.genres.items);
 
   useEffect(() => {
-    dispatch(fetchGenres());
+    dispatch(fetchGenres())
+      .unwrap()
+      .catch((error) => {
+        console.error("Failed to fetch genres:", error);
+      });
   }, [dispatch]);
 
   const availableGenres = genres.filter((g) => !selected.includes(g));
@@ -57,8 +61,16 @@ const GenreSelector: React.FC<Props> = ({ selected, onChange }) => {
               </option>
             ))}
           </select>
-          <svg className={styles.arrow} viewBox="0 0 12 8" xmlns="http://www.w3.org/2000/svg">
-            <polyline points="1,1 6,6 11,1" strokeWidth="2" strokeLinecap="round" />
+          <svg
+            className={styles.arrow}
+            viewBox="0 0 12 8"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <polyline
+              points="1,1 6,6 11,1"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
           </svg>
         </div>
       )}

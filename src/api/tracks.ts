@@ -1,6 +1,11 @@
-import axios from 'axios';
-import { API_BASE } from './config';
-import { Track, TracksQueryParams, TracksResponse, TracksResponseRaw } from '../features/tracks/types';
+import axios from "axios";
+import { API_BASE } from "./config";
+import {
+  Track,
+  TracksQueryParams,
+  TracksResponse,
+  TracksResponseRaw,
+} from "../features/tracks/types";
 
 /**
  * Fetches tracks from the backend with support for filtering, sorting, and pagination.
@@ -9,11 +14,11 @@ import { Track, TracksQueryParams, TracksResponse, TracksResponseRaw } from '../
  * @returns a promise resolving to a flattened TracksResponse
  */
 export const getTracks = (
-  params: TracksQueryParams = {}
+  params: TracksQueryParams = {},
 ): Promise<TracksResponse> => {
   // Remove keys with empty string or undefined values
   const cleanedParams = Object.fromEntries(
-    Object.entries(params).filter(([, v]) => v !== undefined && v !== '')
+    Object.entries(params).filter(([, v]) => v !== undefined && v !== ""),
   );
 
   return axios
@@ -51,15 +56,11 @@ export interface EditTrackPayload extends CreateTrackPayload {
 }
 
 // Creates a new track on the server.
-export const createTrack = (
-  payload: CreateTrackPayload
-): Promise<void> =>
+export const createTrack = (payload: CreateTrackPayload): Promise<void> =>
   axios.post(`${API_BASE}/tracks`, payload).then(() => {});
 
 // Updates an existing track by ID.
-export const editTrack = (
-  payload: EditTrackPayload
-): Promise<Track> =>
+export const editTrack = (payload: EditTrackPayload): Promise<Track> =>
   axios
     .put<Track>(`${API_BASE}/tracks/${payload.id}`, payload)
     .then((res) => res.data);
@@ -74,10 +75,7 @@ export const deleteTrack = (id: string): Promise<void> =>
  * @param file - FormData containing the audio file under a file key
  * @returns a promise resolving to the updated Track including file info
  */
-export const uploadTrackFile = (
-  id: string,
-  file: FormData
-): Promise<Track> =>
+export const uploadTrackFile = (id: string, file: FormData): Promise<Track> =>
   axios
     .post<Track>(`${API_BASE}/tracks/${id}/upload`, file)
     .then((res) => res.data);

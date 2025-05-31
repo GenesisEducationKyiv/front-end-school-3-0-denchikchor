@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import styles from './Header.module.css';
-import Button from '../UI/Button/Button';
-import SearchInput from '../SearchInput/SearchInput';
-import Logo from '../../assets/logo.svg?react';
+import React, { useEffect, useState } from "react";
+import styles from "./Header.module.css";
+import Button from "../UI/Button/Button";
+import SearchInput from "../SearchInput/SearchInput";
+import Logo from "../../assets/logo.svg?react";
 
 interface Props {
   onCreate: () => void;
@@ -21,13 +21,13 @@ const Header: React.FC<Props> = ({ onCreate, searchValue, onSearchChange }) => {
       setLastScrollY(currentY);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
 
   return (
     <header
-      className={`${styles.header} ${hidden ? styles.hidden : ''}`}
+      className={`${styles.header} ${hidden ? styles.hidden : ""}`}
       data-testid="tracks-header"
     >
       <div className={styles.left}>
@@ -35,11 +35,19 @@ const Header: React.FC<Props> = ({ onCreate, searchValue, onSearchChange }) => {
       </div>
 
       <div className={styles.center}>
-        <SearchInput data-testid="search-input" value={searchValue} onChange={onSearchChange} />
+        <SearchInput
+          data-testid="search-input"
+          value={searchValue}
+          onChange={onSearchChange}
+        />
       </div>
 
       <div className={styles.right}>
-        <Button onClick={onCreate} data-testid="create-track-button" variant="primary">
+        <Button
+          onClick={onCreate}
+          data-testid="create-track-button"
+          variant="primary"
+        >
           Create Track
         </Button>
       </div>

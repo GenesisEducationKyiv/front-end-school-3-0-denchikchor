@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import TrackForm from '../TrackForm/TrackForm';
-import styles from './TrackEditModal.module.css';
-import { Track } from '../../features/tracks/types';
-import { editTrack } from '../../features/tracks/trackSlice';
-import { useAppDispatch } from '../../hooks/redux-hook';
-import { toast } from 'react-toastify';
-import ConfirmDialog from '../UI/ConfirmDialog/ConfirmDialog';
-import ToastMessage from '../UI/ToastMessage/ToastMessage';
-import ModalWrapper from '../UI/ModalWrapper/ModalWrapper';
+import React, { useState } from "react";
+import TrackForm from "../TrackForm/TrackForm";
+import styles from "./TrackEditModal.module.css";
+import { Track } from "../../features/tracks/types";
+import { editTrack } from "../../features/tracks/trackSlice";
+import { useAppDispatch } from "../../hooks/redux-hook";
+import { toast } from "react-toastify";
+import ConfirmDialog from "../UI/ConfirmDialog/ConfirmDialog";
+import ToastMessage from "../UI/ToastMessage/ToastMessage";
+import ModalWrapper from "../UI/ModalWrapper/ModalWrapper";
 
 interface Props {
   track: Track;
@@ -28,11 +28,15 @@ const TrackEditModal: React.FC<Props> = ({ track, onClose, onDelete }) => {
   }) => {
     try {
       await dispatch(editTrack({ id: track.id, ...data }));
-      toast.success(<ToastMessage message="Track successfully updated!" type="success" />);
+      toast.success(
+        <ToastMessage message="Track successfully updated!" type="success" />,
+      );
       onClose();
     } catch (error) {
-      console.error('Track editing error:', error);
-      toast.error(<ToastMessage message="Error while editing track" type="error" />);
+      console.error("Track editing error:", error);
+      toast.error(
+        <ToastMessage message="Error while editing track" type="error" />,
+      );
     }
   };
 
@@ -42,7 +46,7 @@ const TrackEditModal: React.FC<Props> = ({ track, onClose, onDelete }) => {
       toast.success(<ToastMessage message="Track deleted" type="success" />);
       onClose();
     } catch (err) {
-      console.error('Delete error:', err);
+      console.error("Delete error:", err);
       toast.error(<ToastMessage message="Error deleting track" type="error" />);
     }
   };
@@ -63,8 +67,12 @@ const TrackEditModal: React.FC<Props> = ({ track, onClose, onDelete }) => {
       {showConfirm && (
         <ConfirmDialog
           message="Are you sure you want to delete this track?"
-          onConfirm={() => {
-            handleDelete();
+          onConfirm={async () => {
+            try {
+              await handleDelete();
+            } catch (err) {
+              console.error("Delete error in ConfirmDialog:", err);
+            }
             setShowConfirm(false);
           }}
           onCancel={() => setShowConfirm(false)}
@@ -76,7 +84,7 @@ const TrackEditModal: React.FC<Props> = ({ track, onClose, onDelete }) => {
           artist: track.artist,
           album: track.album,
           genres: track.genres,
-          coverImage: track.coverImage || '',
+          coverImage: track.coverImage || "",
         }}
         onSubmit={handleSubmit}
         onCancel={onClose}

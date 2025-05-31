@@ -1,7 +1,7 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import type { Track, TracksQueryParams, TracksResponse } from './types';
-import type { AppDispatch } from '../../store';
-import type { CreateTrackPayload, EditTrackPayload } from '../../api/tracks';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import type { Track, TracksQueryParams, TracksResponse } from "./types";
+import type { AppDispatch } from "../../store";
+import type { CreateTrackPayload, EditTrackPayload } from "../../api/tracks";
 import {
   getTracks,
   createTrack as apiCreateTrack,
@@ -9,7 +9,7 @@ import {
   deleteTrack as apiDeleteTrack,
   uploadTrackFile as apiUploadTrackFile,
   removeTrackFile as apiRemoveTrackFile,
-} from '../../api/tracks';
+} from "../../api/tracks";
 
 /**
  * Represents the shape of the tracks slice state.
@@ -17,7 +17,7 @@ import {
 interface TracksState {
   /** Array of track items fetched from the server */
   items: Track[];
-  status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
   /** Current page number for pagination */
   page: number;
@@ -31,7 +31,7 @@ interface TracksState {
 
 const initialState: TracksState = {
   items: [],
-  status: 'idle',
+  status: "idle",
   error: null,
   page: 1,
   limit: 10,
@@ -39,14 +39,13 @@ const initialState: TracksState = {
   totalPages: 1,
 };
 
-
- // Async thunk to fetch tracks with support for filtering, sorting, and pagination.
+// Async thunk to fetch tracks with support for filtering, sorting, and pagination.
 
 export const fetchTracks = createAsyncThunk<TracksResponse, TracksQueryParams>(
-  'tracks/fetchTracks',
+  "tracks/fetchTracks",
   async (params) => {
     return await getTracks(params);
-  }
+  },
 );
 
 /**
@@ -57,24 +56,21 @@ export const createTrack = createAsyncThunk<
   void,
   CreateTrackPayload,
   { dispatch: AppDispatch }
->(
-  'tracks/createTrack',
-  async (payload, { dispatch }) => {
-    await apiCreateTrack(payload);
-    await dispatch(fetchTracks({}));
-  }
-);
+>("tracks/createTrack", async (payload, { dispatch }) => {
+  await apiCreateTrack(payload);
+  await dispatch(fetchTracks({}));
+});
 
 /**
  * Async thunk to edit an existing track.
  * Returns the updated track on success.
  */
 export const editTrack = createAsyncThunk<Track, EditTrackPayload>(
-  'tracks/editTrack',
+  "tracks/editTrack",
   async (payload) => {
     const updated = await apiEditTrack(payload);
     return updated;
-  }
+  },
 );
 
 /**
@@ -82,11 +78,11 @@ export const editTrack = createAsyncThunk<Track, EditTrackPayload>(
  * Performs an optimistic remove from the UI before server confirmation.
  */
 export const deleteTrack = createAsyncThunk<string, string>(
-  'tracks/deleteTrack',
+  "tracks/deleteTrack",
   async (id) => {
     await apiDeleteTrack(id);
     return id;
-  }
+  },
 );
 
 /**
@@ -96,7 +92,7 @@ export const deleteTrack = createAsyncThunk<string, string>(
 export const uploadTrackFile = createAsyncThunk<
   Track,
   { id: string; file: FormData }
->('tracks/uploadTrackFile', async ({ id, file }) => {
+>("tracks/uploadTrackFile", async ({ id, file }) => {
   const updated = await apiUploadTrackFile(id, file);
   return updated;
 });
@@ -106,29 +102,29 @@ export const uploadTrackFile = createAsyncThunk<
  * Returns the ID of the track that had its file removed.
  */
 export const removeTrackFile = createAsyncThunk<string, string>(
-  'tracks/removeTrackFile',
+  "tracks/removeTrackFile",
   async (id) => {
     await apiRemoveTrackFile(id);
     return id;
-  }
+  },
 );
 
 /**
  * The tracks slice containing reducers and extraReducers for handling actions.
  */
 const tracksSlice = createSlice({
-  name: 'tracks',
+  name: "tracks",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
       // Pending: set loading status
       .addCase(fetchTracks.pending, (state) => {
-        state.status = 'loading';
+        state.status = "loading";
       })
       // Fulfilled: store fetched tracks and pagination info
       .addCase(fetchTracks.fulfilled, (state, action) => {
-        state.status = 'succeeded';
+        state.status = "succeeded";
         state.items = action.payload.data;
         state.page = action.payload.page;
         state.limit = action.payload.limit;
@@ -137,22 +133,22 @@ const tracksSlice = createSlice({
       })
       // Rejected: store error message
       .addCase(fetchTracks.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.error.message || 'Failed to load tracks';
+        state.status = "failed";
+        state.error = action.error.message || "Failed to load tracks";
       })
       // Handle create pending for optimistic UI
       .addCase(createTrack.pending, (state, action) => {
-        state.status = 'loading';
-        const tempId = 'temp-' + Date.now();
+        state.status = "loading";
+        const tempId = "temp-" + Date.now();
         const newTrack: Track = {
           id: tempId,
           title: action.meta.arg.title,
           artist: action.meta.arg.artist,
           album: action.meta.arg.album,
           genres: action.meta.arg.genres,
-          coverImage: action.meta.arg.coverImage || '',
-          audioFile: '',
-          slug: '',
+          coverImage: action.meta.arg.coverImage || "",
+          audioFile: "",
+          slug: "",
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         };
@@ -160,39 +156,39 @@ const tracksSlice = createSlice({
       })
       // Create fulfilled: remove temp items
       .addCase(createTrack.fulfilled, (state) => {
-        state.status = 'succeeded';
-        state.items = state.items.filter(t => !t.id.startsWith('temp-'));
+        state.status = "succeeded";
+        state.items = state.items.filter((t) => !t.id.startsWith("temp-"));
       })
       // Create rejected: remove temp and store error
       .addCase(createTrack.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.error.message || 'Create track failed';
-        state.items = state.items.filter(t => !t.id.startsWith('temp-'));
+        state.status = "failed";
+        state.error = action.error.message || "Create track failed";
+        state.items = state.items.filter((t) => !t.id.startsWith("temp-"));
       })
       // Edit fulfilled: update track in-place
       .addCase(editTrack.fulfilled, (state, action) => {
-        const idx = state.items.findIndex(t => t.id === action.payload.id);
+        const idx = state.items.findIndex((t) => t.id === action.payload.id);
         if (idx !== -1) state.items[idx] = action.payload;
       })
       // Delete pending: optimistic UI remove
       .addCase(deleteTrack.pending, (state, action) => {
         const id = action.meta.arg;
-        state.items = state.items.filter(t => t.id !== id);
+        state.items = state.items.filter((t) => t.id !== id);
       })
       // Delete rejected: log error (UI can handle rollback if needed)
       .addCase(deleteTrack.rejected, (state, action) => {
-        console.error('Failed to delete track:', action.error.message);
+        console.error("Failed to delete track:", action.error.message);
       })
       // Upload file fulfilled: replace track with updated version
       .addCase(uploadTrackFile.fulfilled, (state, action) => {
         const updated = action.payload;
-        const idx = state.items.findIndex(t => t.id === updated.id);
+        const idx = state.items.findIndex((t) => t.id === updated.id);
         if (idx !== -1) state.items[idx] = updated;
       })
       // Remove file fulfilled: clear audioFile field
       .addCase(removeTrackFile.fulfilled, (state, action) => {
-        const idx = state.items.findIndex(t => t.id === action.payload);
-        if (idx !== -1) state.items[idx].audioFile = '';
+        const idx = state.items.findIndex((t) => t.id === action.payload);
+        if (idx !== -1) state.items[idx].audioFile = "";
       });
   },
 });

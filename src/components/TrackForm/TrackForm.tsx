@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import styles from './TrackForm.module.css';
-import GenreSelector from '../GenreSelector/GenreSelector';
+import React, { useState } from "react";
+import styles from "./TrackForm.module.css";
+import GenreSelector from "../GenreSelector/GenreSelector";
 
 interface TrackFormData {
   title: string;
@@ -17,11 +17,16 @@ interface Props {
   submitLabel: string;
 }
 
-const TrackForm: React.FC<Props> = ({ initialValues = {}, onSubmit, onCancel, submitLabel }) => {
-  const [title, setTitle] = useState(initialValues.title || '');
-  const [artist, setArtist] = useState(initialValues.artist || '');
-  const [album, setAlbum] = useState(initialValues.album || '');
-  const [coverImage, setCoverImage] = useState(initialValues.coverImage || '');
+const TrackForm: React.FC<Props> = ({
+  initialValues = {},
+  onSubmit,
+  onCancel,
+  submitLabel,
+}) => {
+  const [title, setTitle] = useState(initialValues.title || "");
+  const [artist, setArtist] = useState(initialValues.artist || "");
+  const [album, setAlbum] = useState(initialValues.album || "");
+  const [coverImage, setCoverImage] = useState(initialValues.coverImage || "");
   const [genres, setGenres] = useState<string[]>(initialValues.genres || []);
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<{
@@ -33,8 +38,8 @@ const TrackForm: React.FC<Props> = ({ initialValues = {}, onSubmit, onCancel, su
     e.preventDefault();
 
     const newErrors: typeof errors = {};
-    if (!title.trim()) newErrors.title = 'Track name is required';
-    if (!artist.trim()) newErrors.artist = 'Artist is required';
+    if (!title.trim()) newErrors.title = "Track name is required";
+    if (!artist.trim()) newErrors.artist = "Artist is required";
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -50,7 +55,11 @@ const TrackForm: React.FC<Props> = ({ initialValues = {}, onSubmit, onCancel, su
   };
 
   return (
-    <form onSubmit={handleSubmit} className={styles.form} data-testid="track-form">
+    <form
+      onSubmit={handleSubmit}
+      className={styles.form}
+      data-testid="track-form"
+    >
       <div className={styles.fieldGroup}>
         <input
           data-testid="input-title"
@@ -100,7 +109,7 @@ const TrackForm: React.FC<Props> = ({ initialValues = {}, onSubmit, onCancel, su
           data-loading={submitting}
           aria-disabled={submitting}
         >
-          {submitting ? 'Saving...' : submitLabel}
+          {submitting ? "Saving..." : submitLabel}
         </button>
         <button type="button" onClick={onCancel} data-testid="cancel-button">
           Cancel
