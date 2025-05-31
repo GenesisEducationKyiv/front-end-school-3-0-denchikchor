@@ -1,8 +1,8 @@
-import React from 'react';
-import styles from './TrackItem.module.css';
-import CustomAudioPlayer from '../CustomAudioPlayer/CustomAudioPlayer';
-import TrackUpload from '../TrackUpload/TrackUpload';
-import { API_BASE } from '../../api/config';
+import React from "react";
+import styles from "./TrackItem.module.css";
+import CustomAudioPlayer from "../CustomAudioPlayer/CustomAudioPlayer";
+import TrackUpload from "../TrackUpload/TrackUpload";
+import { API_BASE } from "../../api/config";
 
 interface Props {
   trackId: string;

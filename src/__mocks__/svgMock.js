@@ -1,2 +1,2 @@
-module.exports = 'SvgMock';
-module.exports.ReactComponent = 'svg';
+module.exports = "SvgMock";
+module.exports.ReactComponent = "svg";

@@ -1,7 +1,7 @@
-import React from 'react';
-import TrackItem from '../TrackItem/TrackItem';
-import styles from './TrackList.module.css';
-import { Track } from '../../features/tracks/types';
+import React from "react";
+import TrackItem from "../TrackItem/TrackItem";
+import styles from "./TrackList.module.css";
+import { Track } from "../../features/tracks/types";
 
 interface Props {
   tracks: Track[];
@@ -33,7 +33,7 @@ const TrackListContent: React.FC<Props> = ({
   }
 
   return (
-    <ul className={`${styles.list} ${styles.fadeIn}`}>      
+    <ul className={`${styles.list} ${styles.fadeIn}`}>
       {tracks.map((track, index) => {
         const globalIndex = startIndex + index;
         return (
@@ -44,7 +44,7 @@ const TrackListContent: React.FC<Props> = ({
             onEdit={() => onEditTrack(track)}
             onTogglePlay={() =>
               setCurrentPlayingIndex(
-                currentPlayingIndex === globalIndex ? null : globalIndex
+                currentPlayingIndex === globalIndex ? null : globalIndex,
               )
             }
             onTrackEnd={() => onTrackEnd(globalIndex)}

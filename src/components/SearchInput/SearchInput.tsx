@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import styles from './SearchInput.module.css';
+import React, { useEffect, useRef } from "react";
+import styles from "./SearchInput.module.css";
 
 interface Props {
   value: string;
@@ -11,15 +11,15 @@ const SearchInput: React.FC<Props> = ({ value, onChange }) => {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onChange('');
+      if (e.key === "Escape") {
+        onChange("");
         inputRef.current?.blur();
       }
     };
 
     const el = inputRef.current;
-    el?.addEventListener('keydown', handleKeyDown);
-    return () => el?.removeEventListener('keydown', handleKeyDown);
+    el?.addEventListener("keydown", handleKeyDown);
+    return () => el?.removeEventListener("keydown", handleKeyDown);
   }, [onChange]);
 
   return (
@@ -38,7 +38,7 @@ const SearchInput: React.FC<Props> = ({ value, onChange }) => {
       {value && (
         <button
           type="button"
-          onClick={() => onChange('')}
+          onClick={() => onChange("")}
           className={styles.clearButton}
           aria-label="Clear search"
         >

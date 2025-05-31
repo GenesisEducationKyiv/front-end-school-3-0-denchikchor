@@ -1,6 +1,6 @@
-import { configureStore } from '@reduxjs/toolkit';
-import tracksReducer from './features/tracks/trackSlice';
-import genresReducer from './features/genres/genresSlice';
+import { configureStore } from "@reduxjs/toolkit";
+import tracksReducer from "./features/tracks/trackSlice";
+import genresReducer from "./features/genres/genresSlice";
 
 export const store = configureStore({
   reducer: {

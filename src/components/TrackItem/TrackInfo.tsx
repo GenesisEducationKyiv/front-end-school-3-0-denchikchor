@@ -1,5 +1,5 @@
-import React from 'react';
-import styles from './TrackItem.module.css';
+import React from "react";
+import styles from "./TrackItem.module.css";
 
 interface Props {
   title: string;

@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import styles from './TrackList.module.css';
-import { deleteTrack, fetchTracks } from '../../features/tracks/trackSlice';
-import { useAppDispatch } from '../../hooks/redux-hook';
-import Preloader from '../Preloader/Preloader';
-import TrackListControls from './TrackListControls';
-import TrackListContent from './TrackListContent';
-import TrackListPagination from './TrackListPagination';
-import { Track, TracksQueryParams } from '../../features/tracks/types';
-import { useTracks } from '../../hooks/useTracks';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store';
-import { fetchGenres } from '../../features/genres/genresSlice';
-import { useTrackSelection } from '../../hooks/useTrackSelection';
-import { useDebounce } from '../../hooks/useDebounce';
-import TrackBulkActions from '../TrackBulkActions/TrackBulkActions';
+import React, { useEffect, useState } from "react";
+import styles from "./TrackList.module.css";
+import { deleteTrack, fetchTracks } from "../../features/tracks/trackSlice";
+import { useAppDispatch } from "../../hooks/redux-hook";
+import Preloader from "../Preloader/Preloader";
+import TrackListControls from "./TrackListControls";
+import TrackListContent from "./TrackListContent";
+import TrackListPagination from "./TrackListPagination";
+import { Track, TracksQueryParams } from "../../features/tracks/types";
+import { useTracks } from "../../hooks/useTracks";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
+import { fetchGenres } from "../../features/genres/genresSlice";
+import { useTrackSelection } from "../../hooks/useTrackSelection";
+import { useDebounce } from "../../hooks/useDebounce";
+import TrackBulkActions from "../TrackBulkActions/TrackBulkActions";
 
 /**
  * Props for the TrackList component
@@ -37,9 +37,12 @@ const TrackList: React.FC<Props> = ({
 }) => {
   const dispatch = useAppDispatch();
   // Select paginated track data and metadata from Redux state
-  const { items, status, page, limit, totalCount, totalPages, error } = useTracks();
+  const { items, status, page, limit, totalCount, totalPages, error } =
+    useTracks();
   // Select available genres from Redux state
-  const { items: genres, status: genresStatus } = useSelector((s: RootState) => s.genres);
+  const { items: genres, status: genresStatus } = useSelector(
+    (s: RootState) => s.genres,
+  );
   // Debounce external search input
   const debouncedSearch = useDebounce(searchQuery, 500);
 
@@ -58,27 +61,35 @@ const TrackList: React.FC<Props> = ({
 
   // Fetch genres list on mount
   useEffect(() => {
-    dispatch(fetchGenres());
+    dispatch(fetchGenres())
+      .unwrap()
+      .catch((error) => {
+        console.error("Failed to fetch genres:", error);
+      });
   }, [dispatch]);
 
   // Unified local state for all query parameters
   const [params, setParams] = useState<TracksQueryParams>({
     page: 1,
     limit: 10,
-    sort: '',
-    order: 'asc',
+    sort: "",
+    order: "asc",
     // search and genre will be added later
   });
 
   // Fetch track list whenever params change
   useEffect(() => {
-    dispatch(fetchTracks(params));
+    dispatch(fetchTracks(params))
+      .unwrap()
+      .catch((error) => {
+        console.error("Failed to fetch tracks:", error);
+      });
   }, [dispatch, params]);
 
   // Reset to first page when external search flag triggers
   useEffect(() => {
     if (forceGoToFirstPage) {
-      setParams(p => ({ ...p, page: 1 }));
+      setParams((p) => ({ ...p, page: 1 }));
       window.scrollTo({ top: 0 });
       setForceGoToFirstPage(false);
     }
@@ -91,7 +102,7 @@ const TrackList: React.FC<Props> = ({
 
   // Update search param when debounced search changes
   useEffect(() => {
-    setParams(p => ({
+    setParams((p) => ({
       ...p,
       search: debouncedSearch || undefined,
       page: 1,
@@ -100,36 +111,46 @@ const TrackList: React.FC<Props> = ({
 
   /** Delete a single track by ID */
   const handleDelete = (id: string) => {
-    dispatch(deleteTrack(id));
+    dispatch(deleteTrack(id))
+      .unwrap()
+      .catch((error) => {
+        console.error("Failed to delete track:", error);
+      });
   };
 
   /** Handler for search input change */
   const handleSearchChange = (value: string) =>
-    setParams(p => ({ ...p, search: value || undefined, page: 1 }));
+    setParams((p) => ({ ...p, search: value || undefined, page: 1 }));
 
   /** Handler for genre filter change */
   const handleGenreChange = (genre: string) =>
-    setParams(p => ({ ...p, genre: genre || undefined, page: 1 }));
+    setParams((p) => ({ ...p, genre: genre || undefined, page: 1 }));
 
   /** Handler for sort field change */
-  const handleSortChange = (field: '' | 'title' | 'artist') =>
-    setParams(p => ({
+  const handleSortChange = (field: "" | "title" | "artist") =>
+    setParams((p) => ({
       ...p,
       sort: field,
-      order: p.sort === field && p.order === 'asc' ? 'desc' : 'asc',
+      order: p.sort === field && p.order === "asc" ? "desc" : "asc",
       page: 1,
     }));
 
   /** Handler to toggle sort direction */
   const handleDirectionToggle = () =>
-    setParams(p => ({ ...p, order: p.order === 'asc' ? 'desc' : 'asc', page: 1 }));
+    setParams((p) => ({
+      ...p,
+      order: p.order === "asc" ? "desc" : "asc",
+      page: 1,
+    }));
 
   /** Handler for pagination page change */
   const handlePageChange = (newPage: number) =>
-    setParams(p => ({ ...p, page: newPage }));
+    setParams((p) => ({ ...p, page: newPage }));
 
   // State for tracking which track is playing globally (index within items)
-  const [currentPlayingIndex, setCurrentPlayingIndex] = useState<number | null>(null);
+  const [currentPlayingIndex, setCurrentPlayingIndex] = useState<number | null>(
+    null,
+  );
 
   /**
    * When a track ends, play the next track in the current page or stop
@@ -145,18 +166,18 @@ const TrackList: React.FC<Props> = ({
 
   return (
     <div className={styles.trackList}>
-      {status === 'loading' && items.length === 0 && <Preloader />}
-      {status === 'failed' && <p>Error: {error}</p>}
+      {status === "loading" && items.length === 0 && <Preloader />}
+      {status === "failed" && <p>Error: {error}</p>}
 
       {items.length > 0 && (
         <>
           {/* Controls for sorting, filtering, and searching */}
           <TrackListControls
-            sortBy={(params.sort ?? '') as '' | 'title' | 'artist'}
-            sortDirection={params.order ?? 'asc'}
+            sortBy={(params.sort ?? "") as "" | "title" | "artist"}
+            sortDirection={params.order ?? "asc"}
             onSortChange={handleSortChange}
             onToggleDirection={handleDirectionToggle}
-            selectedGenre={params.genre ?? ''}
+            selectedGenre={params.genre ?? ""}
             onGenreChange={handleGenreChange}
             genres={genres}
             setCurrentPage={handlePageChange}
@@ -168,7 +189,7 @@ const TrackList: React.FC<Props> = ({
             selectedCount={selectedTracks.length}
             totalCount={items.length}
             onToggleMode={toggleSelectionMode}
-            onSelectAll={() => handleSelectAll(items.map(t => t.id))}
+            onSelectAll={() => handleSelectAll(items.map((t) => t.id))}
             onBulkDelete={onBulkDelete}
           />
 

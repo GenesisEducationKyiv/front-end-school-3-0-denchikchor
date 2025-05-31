@@ -13,12 +13,12 @@ export interface Track {
 
 /** Параметри запиту до API треків */
 export interface TracksQueryParams {
-  page?:  number;
+  page?: number;
   limit?: number;
-  search?: string;   // тепер може бути undefined
-  genre?:  string;
-  sort?: '' | 'title' | 'artist'; 
-  order?:  'asc' | 'desc';
+  search?: string; // тепер може бути undefined
+  genre?: string;
+  sort?: "" | "title" | "artist";
+  order?: "asc" | "desc";
 }
 
 /** Відповідь API треків з метаданими */

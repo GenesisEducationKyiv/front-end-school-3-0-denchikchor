@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
-import styles from './CustomAudioPlayer.module.css';
-import PlayIcon from '../../assets/play.svg?react';
-import PauseIcon from '../../assets/pause.svg?react';
+import React, { useEffect, useRef, useState } from "react";
+import styles from "./CustomAudioPlayer.module.css";
+import PlayIcon from "../../assets/play.svg?react";
+import PauseIcon from "../../assets/pause.svg?react";
 
 interface Props {
   src: string;
@@ -10,7 +10,12 @@ interface Props {
   onTogglePlay?: () => void;
 }
 
-const CustomAudioPlayer: React.FC<Props> = ({ src, onEndedNext, isActive, onTogglePlay }) => {
+const CustomAudioPlayer: React.FC<Props> = ({
+  src,
+  onEndedNext,
+  isActive,
+  onTogglePlay,
+}) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -41,7 +46,7 @@ const CustomAudioPlayer: React.FC<Props> = ({ src, onEndedNext, isActive, onTogg
 
       drawWave();
     } catch (err) {
-      console.warn('⚠️ MediaElementSource already created:', err);
+      console.warn("⚠️ MediaElementSource already created:", err);
     }
   };
 
@@ -50,7 +55,7 @@ const CustomAudioPlayer: React.FC<Props> = ({ src, onEndedNext, isActive, onTogg
     const analyser = analyserRef.current;
     if (!canvas || !analyser) return;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     const bufferLength = analyser.frequencyBinCount;
@@ -60,11 +65,11 @@ const CustomAudioPlayer: React.FC<Props> = ({ src, onEndedNext, isActive, onTogg
       requestAnimationFrame(draw);
       analyser.getByteTimeDomainData(dataArray);
 
-      ctx.fillStyle = '#121212';
+      ctx.fillStyle = "#121212";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       ctx.lineWidth = 2;
-      ctx.strokeStyle = '#ccc';
+      ctx.strokeStyle = "#ccc";
       ctx.beginPath();
 
       const sliceWidth = canvas.width / bufferLength;
@@ -87,7 +92,7 @@ const CustomAudioPlayer: React.FC<Props> = ({ src, onEndedNext, isActive, onTogg
   const formatTime = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
-    return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+    return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
   };
 
   useEffect(() => {
@@ -101,7 +106,7 @@ const CustomAudioPlayer: React.FC<Props> = ({ src, onEndedNext, isActive, onTogg
         drawWave();
       }
 
-      audio.play().catch((err) => console.warn('Play error:', err));
+      audio.play().catch((err) => console.warn("Play error:", err));
     } else {
       audio.pause();
     }
@@ -121,22 +126,27 @@ const CustomAudioPlayer: React.FC<Props> = ({ src, onEndedNext, isActive, onTogg
       onEndedNext?.();
     };
 
-    audio.addEventListener('timeupdate', updateProgress);
-    audio.addEventListener('loadedmetadata', updateProgress);
-    audio.addEventListener('ended', handleEnded);
+    audio.addEventListener("timeupdate", updateProgress);
+    audio.addEventListener("loadedmetadata", updateProgress);
+    audio.addEventListener("ended", handleEnded);
 
     return () => {
-      audio.removeEventListener('timeupdate', updateProgress);
-      audio.removeEventListener('loadedmetadata', updateProgress);
-      audio.removeEventListener('ended', handleEnded);
+      audio.removeEventListener("timeupdate", updateProgress);
+      audio.removeEventListener("loadedmetadata", updateProgress);
+      audio.removeEventListener("ended", handleEnded);
     };
   }, [onEndedNext]);
 
   useEffect(() => {
     return () => {
       sourceRef.current?.disconnect();
-      if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
-        audioContextRef.current.close();
+      if (
+        audioContextRef.current &&
+        audioContextRef.current.state !== "closed"
+      ) {
+        audioContextRef.current.close().catch((err) => {
+          console.error("Error while closing AudioContext:", err);
+        });
       }
       setIsConnected(false);
     };
@@ -171,8 +181,15 @@ const CustomAudioPlayer: React.FC<Props> = ({ src, onEndedNext, isActive, onTogg
               {formatTime(currentTime)} / {formatTime(duration)}
             </span>
           </div>
-          <div className={`${styles.canvasWrapper} ${!isActive ? styles.hiddenCanvas : ''}`}>
-            <canvas ref={canvasRef} width={500} height={100} className={styles.canvas} />
+          <div
+            className={`${styles.canvasWrapper} ${!isActive ? styles.hiddenCanvas : ""}`}
+          >
+            <canvas
+              ref={canvasRef}
+              width={500}
+              height={100}
+              className={styles.canvas}
+            />
           </div>
 
           <audio

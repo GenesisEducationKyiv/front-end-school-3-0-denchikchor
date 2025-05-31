@@ -1,8 +1,8 @@
-import React from 'react';
+import React from "react";
 
 interface Props {
   message: string;
-  type: 'success' | 'error' | 'info' | 'warning';
+  type: "success" | "error" | "info" | "warning";
 }
 
 const ToastMessage: React.FC<Props> = ({ message, type }) => (

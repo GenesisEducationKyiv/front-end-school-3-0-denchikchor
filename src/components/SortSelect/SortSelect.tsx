@@ -1,20 +1,25 @@
-import React from 'react';
-import styles from './SortSelect.module.css';
+import React from "react";
+import styles from "./SortSelect.module.css";
 
 interface Props {
-  value: '' | 'title' | 'artist';
-  direction: 'asc' | 'desc';
-  onChange: (value: 'title' | 'artist' | '') => void;
+  value: "" | "title" | "artist";
+  direction: "asc" | "desc";
+  onChange: (value: "title" | "artist" | "") => void;
   onToggleDirection: () => void;
 }
 
-const SortSelect: React.FC<Props> = ({ value, direction, onChange, onToggleDirection }) => {
+const SortSelect: React.FC<Props> = ({
+  value,
+  direction,
+  onChange,
+  onToggleDirection,
+}) => {
   return (
     <div className={styles.sortWrapper}>
       <div className={styles.customSelectWrapper}>
         <select
           value={value}
-          onChange={(e) => onChange(e.target.value as Props['value'])}
+          onChange={(e) => onChange(e.target.value as Props["value"])}
           className={styles.select}
           data-testid="sort-select"
         >
@@ -22,12 +27,20 @@ const SortSelect: React.FC<Props> = ({ value, direction, onChange, onToggleDirec
           <option value="title">Name</option>
           <option value="artist">Artist</option>
         </select>
-        <svg className={styles.arrow} viewBox="0 0 12 8" xmlns="http://www.w3.org/2000/svg">
-          <polyline points="1,1 6,6 11,1" strokeWidth="2" strokeLinecap="round" />
+        <svg
+          className={styles.arrow}
+          viewBox="0 0 12 8"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <polyline
+            points="1,1 6,6 11,1"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
         </svg>
       </div>
       <button onClick={onToggleDirection} className={styles.toggleButton}>
-        {direction === 'asc' ? '↑' : '↓'}
+        {direction === "asc" ? "↑" : "↓"}
       </button>
     </div>
   );

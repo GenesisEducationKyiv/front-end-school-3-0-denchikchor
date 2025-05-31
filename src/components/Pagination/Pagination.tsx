@@ -1,5 +1,5 @@
-import React from 'react';
-import styles from './Pagination.module.css';
+import React from "react";
+import styles from "./Pagination.module.css";
 
 interface Props {
   currentPage: number;
@@ -7,7 +7,11 @@ interface Props {
   onPageChange: (page: number) => void;
 }
 
-const Pagination: React.FC<Props> = ({ currentPage, totalPages, onPageChange }) => {
+const Pagination: React.FC<Props> = ({
+  currentPage,
+  totalPages,
+  onPageChange,
+}) => {
   return (
     <div className={styles.pagination} data-testid="pagination">
       <button
