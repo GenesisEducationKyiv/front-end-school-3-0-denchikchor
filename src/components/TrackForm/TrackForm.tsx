@@ -1,18 +1,14 @@
-import React, { useState } from "react";
-import styles from "./TrackForm.module.css";
-import GenreSelector from "../GenreSelector/GenreSelector";
-
-interface TrackFormData {
-  title: string;
-  artist: string;
-  album: string;
-  genres: string[];
-  coverImage: string;
-}
+// src/components/TrackForm/TrackForm.tsx
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import GenreSelector from '../GenreSelector/GenreSelector';
+import styles from './TrackForm.module.css';
+import { TrackFormSchema, TrackFormSchemaType } from '../../schemas/track';
 
 interface Props {
-  initialValues?: Partial<TrackFormData>;
-  onSubmit: (data: TrackFormData) => void;
+  initialValues?: Partial<TrackFormSchemaType>;
+  onSubmit: (data: TrackFormSchemaType) => Promise<void> | void;
   onCancel: () => void;
   submitLabel: string;
 }
@@ -23,95 +19,104 @@ const TrackForm: React.FC<Props> = ({
   onCancel,
   submitLabel,
 }) => {
-  const [title, setTitle] = useState(initialValues.title || "");
-  const [artist, setArtist] = useState(initialValues.artist || "");
-  const [album, setAlbum] = useState(initialValues.album || "");
-  const [coverImage, setCoverImage] = useState(initialValues.coverImage || "");
-  const [genres, setGenres] = useState<string[]>(initialValues.genres || []);
-  const [submitting, setSubmitting] = useState(false);
-  const [errors, setErrors] = useState<{
-    title?: string;
-    artist?: string;
-  }>({});
+  const {
+  register,
+  handleSubmit,
+  watch,
+  formState: { errors, isSubmitting },
+  setValue,
+} = useForm<TrackFormSchemaType>({
+  resolver: zodResolver(TrackFormSchema),
+  defaultValues: {
+    title: initialValues.title ?? '',
+    artist: initialValues.artist ?? '',
+    album: initialValues.album ?? '',
+    genres: initialValues.genres ?? [],
+    coverImage: initialValues.coverImage ?? '',
+  },
+});
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const genresValue = watch('genres');
 
-    const newErrors: typeof errors = {};
-    if (!title.trim()) newErrors.title = "Track name is required";
-    if (!artist.trim()) newErrors.artist = "Artist is required";
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-
-    setSubmitting(true);
-    try {
-      await onSubmit({ title, artist, album, coverImage, genres });
-    } finally {
-      setSubmitting(false);
-    }
+  const handleGenreChange = (selectedGenres: string[]) => {
+    setValue('genres', selectedGenres, { shouldValidate: true });
   };
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit(async (data) => {
+        await onSubmit(data);
+      })}
       className={styles.form}
       data-testid="track-form"
     >
       <div className={styles.fieldGroup}>
         <input
           data-testid="input-title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          {...register('title')}
           placeholder="Track name"
         />
         {errors.title && (
           <div className={styles.error} data-testid="error-title">
-            {errors.title}
+            {errors.title.message}
           </div>
         )}
       </div>
+
       <div className={styles.fieldGroup}>
         <input
           data-testid="input-artist"
-          value={artist}
-          onChange={(e) => setArtist(e.target.value)}
+          {...register('artist')}
           placeholder="Artist"
         />
         {errors.artist && (
           <div className={styles.error} data-testid="error-artist">
-            {errors.artist}
+            {errors.artist.message}
           </div>
         )}
       </div>
 
       <input
         data-testid="input-album"
-        value={album}
-        onChange={(e) => setAlbum(e.target.value)}
+        {...register('album')}
         placeholder="Album"
       />
-      <GenreSelector selected={genres} onChange={setGenres} />
+      <GenreSelector
+        selected={genresValue ?? []}
+        onChange={handleGenreChange}
+      />
+      {errors.genres && (
+        <div className={styles.error} data-testid="error-genres">
+          {errors.genres.message as string}
+        </div>
+      )}
+
       <input
         data-testid="input-cover-image"
-        value={coverImage}
-        onChange={(e) => setCoverImage(e.target.value)}
+        {...register('coverImage')}
         placeholder="Cover (URL)"
       />
+      {errors.coverImage && (
+        <div className={styles.error} data-testid="error-coverImage">
+          {errors.coverImage.message}
+        </div>
+      )}
 
       <div className={styles.actions}>
         <button
           type="submit"
           data-testid="submit-button"
-          disabled={submitting}
-          data-loading={submitting}
-          aria-disabled={submitting}
+          disabled={isSubmitting}
+          data-loading={isSubmitting}
+          aria-disabled={isSubmitting}
         >
-          {submitting ? "Saving..." : submitLabel}
+          {isSubmitting ? 'Saving...' : submitLabel}
         </button>
-        <button type="button" onClick={onCancel} data-testid="cancel-button">
+        <button
+          type="button"
+          onClick={onCancel}
+          data-testid="cancel-button"
+        >
           Cancel
         </button>
       </div>

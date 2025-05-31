@@ -31,7 +31,7 @@ function PaginationTest({ tracks }: { tracks: Track[] }) {
       </button>
     </div>
   );
-} 
+}
 
 const createTracks = (n: number): Track[] =>
   Array.from({ length: n }, (_, idx) => ({

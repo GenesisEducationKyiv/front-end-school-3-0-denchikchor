@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import ConfirmDialog from "../UI/ConfirmDialog/ConfirmDialog";
 import ToastMessage from "../UI/ToastMessage/ToastMessage";
 import ModalWrapper from "../UI/ModalWrapper/ModalWrapper";
+import { TrackFormSchemaType, TrackFormSchema } from "../../schemas/track";
 
 interface Props {
   track: Track;
@@ -19,15 +20,19 @@ const TrackEditModal: React.FC<Props> = ({ track, onClose, onDelete }) => {
   const dispatch = useAppDispatch();
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const handleSubmit = async (data: {
-    title: string;
-    artist: string;
-    album: string;
-    coverImage: string;
-    genres: string[];
-  }) => {
+  const handleSubmit = async (data: TrackFormSchemaType) => {
     try {
-      await dispatch(editTrack({ id: track.id, ...data }));
+      TrackFormSchema.parse(data);
+
+      const trackData = {
+        id: track.id,
+        title: data.title,
+        artist: data.artist,
+        album: data.album ?? "",
+        genres: data.genres,
+        coverImage: data.coverImage ?? "",
+      };
+      await dispatch(editTrack(trackData));
       toast.success(
         <ToastMessage message="Track successfully updated!" type="success" />,
       );
@@ -82,9 +87,9 @@ const TrackEditModal: React.FC<Props> = ({ track, onClose, onDelete }) => {
         initialValues={{
           title: track.title,
           artist: track.artist,
-          album: track.album,
+          album: track.album ?? "",
           genres: track.genres,
-          coverImage: track.coverImage || "",
+          coverImage: track.coverImage ?? "",
         }}
         onSubmit={handleSubmit}
         onCancel={onClose}
