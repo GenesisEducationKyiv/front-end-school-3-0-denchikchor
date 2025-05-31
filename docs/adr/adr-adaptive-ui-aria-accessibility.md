@@ -1,4 +1,6 @@
-# ADR: Implement Adaptive UI and ARIA Attributes for Accessibility
+# ADR-003: Implement Adaptive UI and ARIA Attributes for Accessibility
+
+## Context
 
 The current interface of the music application is built on React components, but:
 
@@ -37,7 +39,9 @@ We will implement a comprehensive accessibility initiative consisting of two mai
 - Standards Compliance. Meeting WCAG reduces legal risks and improves brand reputation.
 - Consistency. A centralized ARIA and adaptive UI approach ensures uniform accessibility across the application.
 
-## Status: Proposed
+## Status
+
+Proposed
 
 ## Consequences
 
