@@ -7,7 +7,7 @@ export const TrackFormSchema = z.object({
   genres: z
     .array(z.string().min(1))
     .min(1, { message: "Select at least one genre" }),
-  coverImage: z.string().url({ message: "Cover image must be a valid URL" }).optional(),
+  coverImage: z.string().url({ message: "Cover image must be a valid URL" }).optional().or(z.literal("")),
 });
 
 export type TrackFormSchemaType = z.infer<typeof TrackFormSchema>;
