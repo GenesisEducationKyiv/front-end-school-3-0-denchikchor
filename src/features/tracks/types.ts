@@ -11,17 +11,14 @@ export interface Track {
   updatedAt: string;
 }
 
-/** Параметри запиту до API треків */
 export interface TracksQueryParams {
   page?: number;
   limit?: number;
-  search?: string; // тепер може бути undefined
-  genre?: string;
+  search?: string; 
   sort?: "" | "title" | "artist";
   order?: "asc" | "desc";
 }
 
-/** Відповідь API треків з метаданими */
 export interface TracksResponseRaw {
   data: Track[];
   meta: {
