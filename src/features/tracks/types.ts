@@ -14,9 +14,10 @@ export interface Track {
 export interface TracksQueryParams {
   page?: number;
   limit?: number;
-  search?: string; 
+  search?: string;
   sort?: "" | "title" | "artist";
   order?: "asc" | "desc";
+  genre?: string;
 }
 
 export interface TracksResponseRaw {

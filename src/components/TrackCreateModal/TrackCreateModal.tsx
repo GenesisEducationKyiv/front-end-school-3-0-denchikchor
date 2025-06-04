@@ -32,7 +32,7 @@ const TrackCreateModal: React.FC<Props> = ({ onClose, onCreated }) => {
 
     try {
       TrackFormSchema.parse(data);
-      
+
       const trackData = {
         title: data.title,
         artist: data.artist,

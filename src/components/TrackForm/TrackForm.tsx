@@ -1,10 +1,10 @@
 // src/components/TrackForm/TrackForm.tsx
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import GenreSelector from '../GenreSelector/GenreSelector';
-import styles from './TrackForm.module.css';
-import { TrackFormSchema, TrackFormSchemaType } from '../../schemas/track';
+import React from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import GenreSelector from "../GenreSelector/GenreSelector";
+import styles from "./TrackForm.module.css";
+import { TrackFormSchema, TrackFormSchemaType } from "../../schemas/track";
 
 interface Props {
   initialValues?: Partial<TrackFormSchemaType>;
@@ -20,26 +20,26 @@ const TrackForm: React.FC<Props> = ({
   submitLabel,
 }) => {
   const {
-  register,
-  handleSubmit,
-  watch,
-  formState: { errors, isSubmitting },
-  setValue,
-} = useForm<TrackFormSchemaType>({
-  resolver: zodResolver(TrackFormSchema),
-  defaultValues: {
-    title: initialValues.title ?? '',
-    artist: initialValues.artist ?? '',
-    album: initialValues.album ?? '',
-    genres: initialValues.genres ?? [],
-    coverImage: initialValues.coverImage ?? '',
-  },
-});
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors, isSubmitting },
+    setValue,
+  } = useForm<TrackFormSchemaType>({
+    resolver: zodResolver(TrackFormSchema),
+    defaultValues: {
+      title: initialValues.title ?? "",
+      artist: initialValues.artist ?? "",
+      album: initialValues.album ?? "",
+      genres: initialValues.genres ?? [],
+      coverImage: initialValues.coverImage ?? "",
+    },
+  });
 
-  const genresValue = watch('genres');
+  const genresValue = watch("genres");
 
   const handleGenreChange = (selectedGenres: string[]) => {
-    setValue('genres', selectedGenres, { shouldValidate: true });
+    setValue("genres", selectedGenres, { shouldValidate: true });
   };
 
   return (
@@ -53,7 +53,7 @@ const TrackForm: React.FC<Props> = ({
       <div className={styles.fieldGroup}>
         <input
           data-testid="input-title"
-          {...register('title')}
+          {...register("title")}
           placeholder="Track name"
         />
         {errors.title && (
@@ -66,7 +66,7 @@ const TrackForm: React.FC<Props> = ({
       <div className={styles.fieldGroup}>
         <input
           data-testid="input-artist"
-          {...register('artist')}
+          {...register("artist")}
           placeholder="Artist"
         />
         {errors.artist && (
@@ -78,7 +78,7 @@ const TrackForm: React.FC<Props> = ({
 
       <input
         data-testid="input-album"
-        {...register('album')}
+        {...register("album")}
         placeholder="Album"
       />
       <GenreSelector
@@ -93,7 +93,7 @@ const TrackForm: React.FC<Props> = ({
 
       <input
         data-testid="input-cover-image"
-        {...register('coverImage')}
+        {...register("coverImage")}
         placeholder="Cover (URL)"
       />
       {errors.coverImage && (
@@ -110,13 +110,9 @@ const TrackForm: React.FC<Props> = ({
           data-loading={isSubmitting}
           aria-disabled={isSubmitting}
         >
-          {isSubmitting ? 'Saving...' : submitLabel}
+          {isSubmitting ? "Saving..." : submitLabel}
         </button>
-        <button
-          type="button"
-          onClick={onCancel}
-          data-testid="cancel-button"
-        >
+        <button type="button" onClick={onCancel} data-testid="cancel-button">
           Cancel
         </button>
       </div>

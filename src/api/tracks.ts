@@ -18,35 +18,38 @@ import type { ApiError } from "./apiErrors";
 export const getTracks = async (
   params: TracksQueryParams = {},
 ): Promise<Result<TracksResponse, ApiError>> => {
-
   const cleanedParams = Object.fromEntries(
     Object.entries(params).filter(([, v]) => v !== undefined && v !== ""),
   );
 
-  const axiosResult: Result<AxiosResponse<TracksResponseRaw>, ApiError> =
-    await fromPromise(
-      axios.get<TracksResponseRaw>(`${API_BASE}/tracks`, { params: cleanedParams }),
-      (error: unknown) => {
-        const e = error as AxiosError;
+  const axiosResult: Result<
+    AxiosResponse<TracksResponseRaw>,
+    ApiError
+  > = await fromPromise(
+    axios.get<TracksResponseRaw>(`${API_BASE}/tracks`, {
+      params: cleanedParams,
+    }),
+    (error: unknown) => {
+      const e = error as AxiosError;
 
-        // Narrow e.response.data to an object that might have a string "message" property
-        const data = e.response?.data as { message?: unknown } | undefined;
-        let messageText: string;
-        if (data && typeof data.message === "string") {
-          messageText = data.message;
-        } else {
-          messageText = e.message;
-        }
-
-        if (e.response) {
-          return {
-            message: messageText,
-            status: e.response.status,
-          };
-        }
-        return { message: e.message };
+      // Narrow e.response.data to an object that might have a string "message" property
+      const data = e.response?.data as { message?: unknown } | undefined;
+      let messageText: string;
+      if (data && typeof data.message === "string") {
+        messageText = data.message;
+      } else {
+        messageText = e.message;
       }
-    );
+
+      if (e.response) {
+        return {
+          message: messageText,
+          status: e.response.status,
+        };
+      }
+      return { message: e.message };
+    },
+  );
 
   return axiosResult.map((response) => {
     const { data, meta } = response.data;
@@ -81,7 +84,7 @@ export interface EditTrackPayload extends CreateTrackPayload {
 
 // Creates a new track on the server.
 export const createTrack = async (
-  payload: CreateTrackPayload
+  payload: CreateTrackPayload,
 ): Promise<Result<void, ApiError>> => {
   const result = await fromPromise(
     axios.post(`${API_BASE}/tracks`, payload),
@@ -90,11 +93,12 @@ export const createTrack = async (
       if (e.response !== undefined) {
         // Narrow e.response.data to { message?: unknown }
         const data = e.response.data as { message?: unknown };
-        const messageText = data && typeof data.message === "string" ? data.message : e.message;
+        const messageText =
+          typeof data?.message === "string" ? data.message : e.message;
         return { message: messageText, status: e.response.status };
       }
       return { message: e.message };
-    }
+    },
   );
 
   return result.map(() => void 0);
@@ -102,7 +106,7 @@ export const createTrack = async (
 
 // Updates an existing track by ID.
 export const editTrack = async (
-  payload: EditTrackPayload
+  payload: EditTrackPayload,
 ): Promise<Result<Track, ApiError>> => {
   const result = await fromPromise(
     axios.put<Track>(`${API_BASE}/tracks/${payload.id}`, payload),
@@ -110,29 +114,33 @@ export const editTrack = async (
       const e = error as AxiosError;
       if (e.response !== undefined) {
         const data = e.response.data as { message?: unknown };
-        const messageText = data && typeof data.message === "string" ? data.message : e.message;
+        const messageText =
+          typeof data?.message === "string" ? data.message : e.message;
         return { message: messageText, status: e.response.status };
       }
       return { message: e.message };
-    }
+    },
   );
 
   return result.map((r) => r.data);
 };
 
 //Deletes a track by ID.
-export const deleteTrack = async (id: string): Promise<Result<void, ApiError>> => {
+export const deleteTrack = async (
+  id: string,
+): Promise<Result<void, ApiError>> => {
   const result = await fromPromise(
     axios.delete(`${API_BASE}/tracks/${id}`),
     (error: unknown) => {
       const e = error as AxiosError;
       if (e.response !== undefined) {
         const data = e.response.data as { message?: unknown };
-        const messageText = data && typeof data.message === "string" ? data.message : e.message;
+        const messageText =
+          typeof data?.message === "string" ? data.message : e.message;
         return { message: messageText, status: e.response.status };
       }
       return { message: e.message };
-    }
+    },
   );
 
   return result.map(() => void 0);
@@ -146,7 +154,7 @@ export const deleteTrack = async (id: string): Promise<Result<void, ApiError>> =
  */
 export const uploadTrackFile = async (
   id: string,
-  file: FormData
+  file: FormData,
 ): Promise<Result<Track, ApiError>> => {
   const result = await fromPromise(
     axios.post<Track>(`${API_BASE}/tracks/${id}/upload`, file),
@@ -154,11 +162,12 @@ export const uploadTrackFile = async (
       const e = error as AxiosError;
       if (e.response !== undefined) {
         const data = e.response.data as { message?: unknown };
-        const messageText = data && typeof data.message === "string" ? data.message : e.message;
+        const messageText =
+          typeof data?.message === "string" ? data.message : e.message;
         return { message: messageText, status: e.response.status };
       }
       return { message: e.message };
-    }
+    },
   );
 
   return result.map((r) => r.data);
@@ -169,18 +178,21 @@ export const uploadTrackFile = async (
  * @param id - the track ID
  * @returns a promise that resolves when the file is deleted
  */
-export const removeTrackFile = async (id: string): Promise<Result<void, ApiError>> => {
+export const removeTrackFile = async (
+  id: string,
+): Promise<Result<void, ApiError>> => {
   const result = await fromPromise(
     axios.delete(`${API_BASE}/tracks/${id}/file`),
     (error: unknown) => {
       const e = error as AxiosError;
       if (e.response !== undefined) {
         const data = e.response.data as { message?: unknown };
-        const messageText = data && typeof data.message === "string" ? data.message : e.message;
+        const messageText =
+          typeof data?.message === "string" ? data.message : e.message;
         return { message: messageText, status: e.response.status };
       }
       return { message: e.message };
-    }
+    },
   );
 
   return result.map(() => void 0);

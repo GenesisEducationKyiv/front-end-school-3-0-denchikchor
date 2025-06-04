@@ -26,14 +26,14 @@ export const fetchTracks = createAsyncThunk<
   "tracks/fetchTracks",
   async (
     params,
-    { rejectWithValue }
+    { rejectWithValue },
   ): Promise<TracksResponse | ReturnType<typeof rejectWithValue>> => {
     const result = await apiGetTracks(params);
     if (result.isErr()) {
       return rejectWithValue(result.error);
     }
     return result.value;
-  }
+  },
 );
 
 /**
@@ -45,16 +45,13 @@ export const createTrack = createAsyncThunk<
   void,
   CreateTrackPayload,
   { dispatch: AppDispatch; rejectValue: ApiError }
->(
-  "tracks/createTrack",
-  async (payload, { dispatch, rejectWithValue }) => {
-    const result = await apiCreateTrack(payload);
-    if (result.isErr()) {
-      return rejectWithValue(result.error);
-    }
-    await dispatch(fetchTracks({}));
+>("tracks/createTrack", async (payload, { dispatch, rejectWithValue }) => {
+  const result = await apiCreateTrack(payload);
+  if (result.isErr()) {
+    return rejectWithValue(result.error);
   }
-);
+  await dispatch(fetchTracks({}));
+});
 
 /**
  * Async thunk to edit an existing track.
@@ -65,16 +62,13 @@ export const editTrack = createAsyncThunk<
   Track,
   EditTrackPayload,
   { rejectValue: ApiError }
->(
-  "tracks/editTrack",
-  async (payload, { rejectWithValue }) => {
-    const result = await apiEditTrack(payload);
-    if (result.isErr()) {
-      return rejectWithValue(result.error);
-    }
-    return result.value;
+>("tracks/editTrack", async (payload, { rejectWithValue }) => {
+  const result = await apiEditTrack(payload);
+  if (result.isErr()) {
+    return rejectWithValue(result.error);
   }
-);
+  return result.value;
+});
 
 /**
  * Async thunk to delete a track by ID.
@@ -85,16 +79,13 @@ export const deleteTrack = createAsyncThunk<
   string,
   string,
   { rejectValue: ApiError }
->(
-  "tracks/deleteTrack",
-  async (id, { rejectWithValue }) => {
-    const result = await apiDeleteTrack(id);
-    if (result.isErr()) {
-      return rejectWithValue(result.error);
-    }
-    return id;
+>("tracks/deleteTrack", async (id, { rejectWithValue }) => {
+  const result = await apiDeleteTrack(id);
+  if (result.isErr()) {
+    return rejectWithValue(result.error);
   }
-);
+  return id;
+});
 
 /**
  * Async thunk to upload an audio file for a specific track.
@@ -105,16 +96,13 @@ export const uploadTrackFile = createAsyncThunk<
   Track,
   { id: string; file: FormData },
   { rejectValue: ApiError }
->(
-  "tracks/uploadTrackFile",
-  async ({ id, file }, { rejectWithValue }) => {
-    const result = await apiUploadTrackFile(id, file);
-    if (result.isErr()) {
-      return rejectWithValue(result.error);
-    }
-    return result.value;
+>("tracks/uploadTrackFile", async ({ id, file }, { rejectWithValue }) => {
+  const result = await apiUploadTrackFile(id, file);
+  if (result.isErr()) {
+    return rejectWithValue(result.error);
   }
-);
+  return result.value;
+});
 
 /**
  * Async thunk to remove the audio file from a specific track.
@@ -125,16 +113,13 @@ export const removeTrackFile = createAsyncThunk<
   string,
   string,
   { rejectValue: ApiError }
->(
-  "tracks/removeTrackFile",
-  async (id, { rejectWithValue }) => {
-    const result = await apiRemoveTrackFile(id);
-    if (result.isErr()) {
-      return rejectWithValue(result.error);
-    }
-    return id;
+>("tracks/removeTrackFile", async (id, { rejectWithValue }) => {
+  const result = await apiRemoveTrackFile(id);
+  if (result.isErr()) {
+    return rejectWithValue(result.error);
   }
-);
+  return id;
+});
 
 /**
  * Represents the shape of the tracks slice state.
@@ -180,10 +165,10 @@ const tracksSlice = createSlice({
       })
       .addCase(fetchTracks.rejected, (state, action) => {
         state.status = "failed";
-        if (action.payload) {
-          state.error = action.payload.message;
+        if (action.payload !== undefined) {
+          state.error = action.payload.message ?? "Unknown error";
         } else {
-          state.error = action.error.message || "Failed to load tracks";
+          state.error = action.error.message ?? "Failed to load tracks";
         }
       })
 
@@ -197,7 +182,7 @@ const tracksSlice = createSlice({
           artist: action.meta.arg.artist,
           album: action.meta.arg.album,
           genres: action.meta.arg.genres,
-          coverImage: action.meta.arg.coverImage || "",
+          coverImage: action.meta.arg.coverImage ?? "",
           audioFile: "",
           slug: "",
           createdAt: new Date().toISOString(),
@@ -211,11 +196,10 @@ const tracksSlice = createSlice({
       })
       .addCase(createTrack.rejected, (state, action) => {
         state.status = "failed";
-        if (action.payload) {
-          state.error = action.payload.message;
-        } else {
-          state.error = action.error.message || "Create track failed";
-        }
+        state.error =
+          action.payload?.message ??
+          action.error.message ??
+          "Create track failed";
         state.items = state.items.filter((t) => !t.id.startsWith("temp-"));
       })
 
@@ -225,7 +209,10 @@ const tracksSlice = createSlice({
         if (idx !== -1) state.items[idx] = action.payload;
       })
       .addCase(editTrack.rejected, (state, action) => {
-        state.error = action.payload ? action.payload.message : action.error.message || "Edit failed";
+        state.error =
+          action.payload !== undefined
+            ? action.payload.message
+            : (action.error.message ?? "Edit failed");
       })
 
       // deleteTrack
@@ -233,7 +220,10 @@ const tracksSlice = createSlice({
         state.items = state.items.filter((t) => t.id !== action.meta.arg);
       })
       .addCase(deleteTrack.rejected, (state, action) => {
-        console.error("Failed to delete track:", action.payload ?? action.error.message);
+        console.error(
+          "Failed to delete track:",
+          action.payload ?? action.error.message,
+        );
       })
 
       // uploadTrackFile
@@ -243,7 +233,10 @@ const tracksSlice = createSlice({
         if (idx !== -1) state.items[idx] = updated;
       })
       .addCase(uploadTrackFile.rejected, (state, action) => {
-        console.error("Failed to upload file:", action.payload ?? action.error.message);
+        console.error(
+          "Failed to upload file:",
+          action.payload ?? action.error.message,
+        );
       })
 
       // removeTrackFile
@@ -252,7 +245,10 @@ const tracksSlice = createSlice({
         if (idx !== -1) state.items[idx].audioFile = "";
       })
       .addCase(removeTrackFile.rejected, (state, action) => {
-        console.error("Failed to remove file:", action.payload ?? action.error.message);
+        console.error(
+          "Failed to remove file:",
+          action.payload ?? action.error.message,
+        );
       });
   },
 });
