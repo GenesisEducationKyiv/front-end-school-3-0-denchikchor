@@ -18,6 +18,10 @@ const Button: React.FC<Props> = ({
   iconPosition,
   ...rest
 }) => {
+  const hasIcon = icon != null;
+  const showLeftIcon = hasIcon && iconPosition === "left";
+  const showRightIcon = hasIcon && iconPosition === "right";
+
   return (
     <button
       className={classNames(
@@ -28,13 +32,9 @@ const Button: React.FC<Props> = ({
       )}
       {...rest}
     >
-      {icon && iconPosition === "left" && (
-        <span className={styles.icon}>{icon}</span>
-      )}
+      {showLeftIcon && <span className={styles.icon}>{icon}</span>}
       {children}
-      {icon && iconPosition === "right" && (
-        <span className={styles.icon}>{icon}</span>
-      )}
+      {showRightIcon && <span className={styles.icon}>{icon}</span>}
     </button>
   );
 };

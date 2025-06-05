@@ -8,6 +8,7 @@ import {
 } from "../features/tracks/types";
 import { fromPromise, Result } from "neverthrow";
 import type { ApiError } from "./apiErrors";
+import { mapAxiosError } from "./apiHelpers";
 
 /**
  * Fetches tracks from the backend with support for filtering, sorting, and pagination.
@@ -29,26 +30,7 @@ export const getTracks = async (
     axios.get<TracksResponseRaw>(`${API_BASE}/tracks`, {
       params: cleanedParams,
     }),
-    (error: unknown) => {
-      const e = error as AxiosError;
-
-      // Narrow e.response.data to an object that might have a string "message" property
-      const data = e.response?.data as { message?: unknown } | undefined;
-      let messageText: string;
-      if (data && typeof data.message === "string") {
-        messageText = data.message;
-      } else {
-        messageText = e.message;
-      }
-
-      if (e.response) {
-        return {
-          message: messageText,
-          status: e.response.status,
-        };
-      }
-      return { message: e.message };
-    },
+    mapAxiosError
   );
 
   return axiosResult.map((response) => {
@@ -88,17 +70,7 @@ export const createTrack = async (
 ): Promise<Result<void, ApiError>> => {
   const result = await fromPromise(
     axios.post(`${API_BASE}/tracks`, payload),
-    (error: unknown) => {
-      const e = error as AxiosError;
-      if (e.response !== undefined) {
-        // Narrow e.response.data to { message?: unknown }
-        const data = e.response.data as { message?: unknown };
-        const messageText =
-          typeof data?.message === "string" ? data.message : e.message;
-        return { message: messageText, status: e.response.status };
-      }
-      return { message: e.message };
-    },
+    mapAxiosError
   );
 
   return result.map(() => void 0);
@@ -110,16 +82,7 @@ export const editTrack = async (
 ): Promise<Result<Track, ApiError>> => {
   const result = await fromPromise(
     axios.put<Track>(`${API_BASE}/tracks/${payload.id}`, payload),
-    (error: unknown) => {
-      const e = error as AxiosError;
-      if (e.response !== undefined) {
-        const data = e.response.data as { message?: unknown };
-        const messageText =
-          typeof data?.message === "string" ? data.message : e.message;
-        return { message: messageText, status: e.response.status };
-      }
-      return { message: e.message };
-    },
+    mapAxiosError
   );
 
   return result.map((r) => r.data);
@@ -131,16 +94,7 @@ export const deleteTrack = async (
 ): Promise<Result<void, ApiError>> => {
   const result = await fromPromise(
     axios.delete(`${API_BASE}/tracks/${id}`),
-    (error: unknown) => {
-      const e = error as AxiosError;
-      if (e.response !== undefined) {
-        const data = e.response.data as { message?: unknown };
-        const messageText =
-          typeof data?.message === "string" ? data.message : e.message;
-        return { message: messageText, status: e.response.status };
-      }
-      return { message: e.message };
-    },
+    mapAxiosError
   );
 
   return result.map(() => void 0);
@@ -158,16 +112,7 @@ export const uploadTrackFile = async (
 ): Promise<Result<Track, ApiError>> => {
   const result = await fromPromise(
     axios.post<Track>(`${API_BASE}/tracks/${id}/upload`, file),
-    (error: unknown) => {
-      const e = error as AxiosError;
-      if (e.response !== undefined) {
-        const data = e.response.data as { message?: unknown };
-        const messageText =
-          typeof data?.message === "string" ? data.message : e.message;
-        return { message: messageText, status: e.response.status };
-      }
-      return { message: e.message };
-    },
+    mapAxiosError
   );
 
   return result.map((r) => r.data);
@@ -183,16 +128,7 @@ export const removeTrackFile = async (
 ): Promise<Result<void, ApiError>> => {
   const result = await fromPromise(
     axios.delete(`${API_BASE}/tracks/${id}/file`),
-    (error: unknown) => {
-      const e = error as AxiosError;
-      if (e.response !== undefined) {
-        const data = e.response.data as { message?: unknown };
-        const messageText =
-          typeof data?.message === "string" ? data.message : e.message;
-        return { message: messageText, status: e.response.status };
-      }
-      return { message: e.message };
-    },
+    mapAxiosError
   );
 
   return result.map(() => void 0);
