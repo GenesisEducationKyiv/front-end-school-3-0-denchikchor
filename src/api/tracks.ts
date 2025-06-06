@@ -1,6 +1,14 @@
-import axios from 'axios';
-import { API_BASE } from './config';
-import { Track, TracksQueryParams, TracksResponse, TracksResponseRaw } from '../features/tracks/types';
+import axios, { AxiosError, AxiosResponse } from "axios";
+import { API_BASE } from "./config";
+import {
+  Track,
+  TracksQueryParams,
+  TracksResponse,
+  TracksResponseRaw,
+} from "../features/tracks/types";
+import { fromPromise, Result } from "neverthrow";
+import type { ApiError } from "./apiErrors";
+import { mapAxiosError } from "./apiHelpers";
 
 /**
  * Fetches tracks from the backend with support for filtering, sorting, and pagination.
@@ -8,27 +16,33 @@ import { Track, TracksQueryParams, TracksResponse, TracksResponseRaw } from '../
  * @param params - query parameters to apply (page, limit, search, sort, etc.)
  * @returns a promise resolving to a flattened TracksResponse
  */
-export const getTracks = (
-  params: TracksQueryParams = {}
-): Promise<TracksResponse> => {
-  // Remove keys with empty string or undefined values
+export const getTracks = async (
+  params: TracksQueryParams = {},
+): Promise<Result<TracksResponse, ApiError>> => {
   const cleanedParams = Object.fromEntries(
-    Object.entries(params).filter(([, v]) => v !== undefined && v !== '')
+    Object.entries(params).filter(([, v]) => v !== undefined && v !== ""),
   );
 
-  return axios
-    .get<TracksResponseRaw>(`${API_BASE}/tracks`, { params: cleanedParams })
-    .then((res) => {
-      const { data, meta } = res.data;
-      // Flatten the meta object into top-level response
-      return {
-        data,
-        page: meta.page,
-        limit: meta.limit,
-        totalCount: meta.total,
-        totalPages: meta.totalPages,
-      };
-    });
+  const axiosResult: Result<
+    AxiosResponse<TracksResponseRaw>,
+    ApiError
+  > = await fromPromise(
+    axios.get<TracksResponseRaw>(`${API_BASE}/tracks`, {
+      params: cleanedParams,
+    }),
+    mapAxiosError
+  );
+
+  return axiosResult.map((response) => {
+    const { data, meta } = response.data;
+    return {
+      data,
+      page: meta.page,
+      limit: meta.limit,
+      totalCount: meta.total,
+      totalPages: meta.totalPages,
+    };
+  });
 };
 
 /**
@@ -51,22 +65,40 @@ export interface EditTrackPayload extends CreateTrackPayload {
 }
 
 // Creates a new track on the server.
-export const createTrack = (
-  payload: CreateTrackPayload
-): Promise<void> =>
-  axios.post(`${API_BASE}/tracks`, payload).then(() => {});
+export const createTrack = async (
+  payload: CreateTrackPayload,
+): Promise<Result<void, ApiError>> => {
+  const result = await fromPromise(
+    axios.post(`${API_BASE}/tracks`, payload),
+    mapAxiosError
+  );
+
+  return result.map(() => void 0);
+};
 
 // Updates an existing track by ID.
-export const editTrack = (
-  payload: EditTrackPayload
-): Promise<Track> =>
-  axios
-    .put<Track>(`${API_BASE}/tracks/${payload.id}`, payload)
-    .then((res) => res.data);
+export const editTrack = async (
+  payload: EditTrackPayload,
+): Promise<Result<Track, ApiError>> => {
+  const result = await fromPromise(
+    axios.put<Track>(`${API_BASE}/tracks/${payload.id}`, payload),
+    mapAxiosError
+  );
+
+  return result.map((r) => r.data);
+};
 
 //Deletes a track by ID.
-export const deleteTrack = (id: string): Promise<void> =>
-  axios.delete(`${API_BASE}/tracks/${id}`).then(() => {});
+export const deleteTrack = async (
+  id: string,
+): Promise<Result<void, ApiError>> => {
+  const result = await fromPromise(
+    axios.delete(`${API_BASE}/tracks/${id}`),
+    mapAxiosError
+  );
+
+  return result.map(() => void 0);
+};
 
 /**
  * Uploads an audio file for a specific track.
@@ -74,18 +106,30 @@ export const deleteTrack = (id: string): Promise<void> =>
  * @param file - FormData containing the audio file under a file key
  * @returns a promise resolving to the updated Track including file info
  */
-export const uploadTrackFile = (
+export const uploadTrackFile = async (
   id: string,
-  file: FormData
-): Promise<Track> =>
-  axios
-    .post<Track>(`${API_BASE}/tracks/${id}/upload`, file)
-    .then((res) => res.data);
+  file: FormData,
+): Promise<Result<Track, ApiError>> => {
+  const result = await fromPromise(
+    axios.post<Track>(`${API_BASE}/tracks/${id}/upload`, file),
+    mapAxiosError
+  );
+
+  return result.map((r) => r.data);
+};
 
 /**
  * Removes the audio file from a specific track.
  * @param id - the track ID
  * @returns a promise that resolves when the file is deleted
  */
-export const removeTrackFile = (id: string): Promise<void> =>
-  axios.delete(`${API_BASE}/tracks/${id}/file`).then(() => {});
+export const removeTrackFile = async (
+  id: string,
+): Promise<Result<void, ApiError>> => {
+  const result = await fromPromise(
+    axios.delete(`${API_BASE}/tracks/${id}/file`),
+    mapAxiosError
+  );
+
+  return result.map(() => void 0);
+};

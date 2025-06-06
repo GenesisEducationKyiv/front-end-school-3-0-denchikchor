@@ -1,12 +1,12 @@
-import React from 'react';
-import SortSelect from '../SortSelect/SortSelect';
-import TrackFilters from '../TrackFilters/TrackFilters';
-import styles from './TrackList.module.css';
+import React from "react";
+import SortSelect from "../SortSelect/SortSelect";
+import TrackFilters from "../TrackFilters/TrackFilters";
+import styles from "./TrackList.module.css";
 
 interface Props {
-  sortBy: '' | 'title' | 'artist';
-  sortDirection: 'asc' | 'desc';
-  onSortChange: (field: '' | 'title' | 'artist') => void;
+  sortBy: "" | "title" | "artist";
+  sortDirection: "asc" | "desc";
+  onSortChange: (field: "" | "title" | "artist") => void;
   onToggleDirection: () => void;
   selectedGenre: string;
   onGenreChange: (genre: string) => void;

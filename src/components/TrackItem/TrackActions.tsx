@@ -1,6 +1,6 @@
-import React from 'react';
-import styles from './TrackItem.module.css';
-import Dots from '../../assets/dots.svg?react';
+import React from "react";
+import styles from "./TrackItem.module.css";
+import Dots from "../../assets/dots.svg?react";
 
 interface Props {
   onEdit: () => void;

@@ -1,5 +1,5 @@
-import React from 'react';
-import styles from './TrackFilters.module.css';
+import React from "react";
+import styles from "./TrackFilters.module.css";
 
 interface Props {
   genres: string[];
@@ -9,7 +9,6 @@ interface Props {
 }
 
 const TrackFilters: React.FC<Props> = ({
-
   genres,
   selectedGenre,
   onGenreChange,
@@ -34,8 +33,16 @@ const TrackFilters: React.FC<Props> = ({
             </option>
           ))}
         </select>
-        <svg className={styles.arrow} viewBox="0 0 12 8" xmlns="http://www.w3.org/2000/svg">
-          <polyline points="1,1 6,6 11,1" strokeWidth="2" strokeLinecap="round" />
+        <svg
+          className={styles.arrow}
+          viewBox="0 0 12 8"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <polyline
+            points="1,1 6,6 11,1"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
         </svg>
       </div>
     </div>

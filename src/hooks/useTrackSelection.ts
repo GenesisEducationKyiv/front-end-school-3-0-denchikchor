@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { useAppDispatch } from './redux-hook';
-import { deleteTrack, fetchTracks } from '../features/tracks/trackSlice';
-import { TracksQueryParams } from '../features/tracks/types';
+import { useState } from "react";
+import { useAppDispatch } from "./redux-hook";
+import { deleteTrack, fetchTracks } from "../features/tracks/trackSlice";
+import { TracksQueryParams } from "../features/tracks/types";
 
 /**
  * Custom hook for managing bulk selection and deletion of tracks.
@@ -21,7 +21,7 @@ export const useTrackSelection = () => {
    * When toggling off, clear any selected tracks.
    */
   const toggleSelectionMode = () => {
-    setSelectionMode(prev => !prev);
+    setSelectionMode((prev) => !prev);
     setSelectedTracks([]);
   };
 
@@ -30,8 +30,8 @@ export const useTrackSelection = () => {
    * If already selected, unselect it; otherwise, add to selection.
    */
   const toggleTrackSelection = (id: string) => {
-    setSelectedTracks(prev =>
-      prev.includes(id) ? prev.filter(tid => tid !== id) : [...prev, id]
+    setSelectedTracks((prev) =>
+      prev.includes(id) ? prev.filter((tid) => tid !== id) : [...prev, id],
     );
   };
 
@@ -49,12 +49,14 @@ export const useTrackSelection = () => {
    */
   const handleBulkDelete = async (
     selectedIds: string[],
-    params: TracksQueryParams
+    params: TracksQueryParams,
   ) => {
     // Perform deletion for each selected track
-    await Promise.all(selectedIds.map(id => dispatch(deleteTrack(id))));
+    await Promise.all(selectedIds.map((id) => dispatch(deleteTrack(id))));
     // Re-fetch tracks with existing query parameters
-    dispatch(fetchTracks(params));
+    await dispatch(fetchTracks(params))
+      .unwrap()
+      .catch((error) => console.error("Failed to fetch tracks:", error));
     // Reset selection state
     setSelectedTracks([]);
     setSelectionMode(false);

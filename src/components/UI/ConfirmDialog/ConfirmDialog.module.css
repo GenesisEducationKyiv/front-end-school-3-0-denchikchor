@@ -37,12 +37,12 @@
   font-weight: 500;
 }
 
-.actions button[data-testid='confirm-delete'] {
+.actions button[data-testid="confirm-delete"] {
   background-color: #f33;
   color: white;
 }
 
-.actions button[data-testid='cancel-delete'] {
+.actions button[data-testid="cancel-delete"] {
   background-color: #444;
   color: white;
 }

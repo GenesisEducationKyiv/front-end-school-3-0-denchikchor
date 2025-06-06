@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import styles from './ModalWrapper.module.css';
+import React, { useEffect, useRef } from "react";
+import styles from "./ModalWrapper.module.css";
 
 interface Props {
   children: React.ReactNode;
@@ -11,10 +11,10 @@ const ModalWrapper: React.FC<Props> = ({ children, onClose }) => {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === "Escape") onClose();
     };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
   const handleClickOutside = (e: React.MouseEvent) => {

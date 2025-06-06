@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import styles from './TrackBulkActions.module.css';
-import ConfirmDialog from '../UI/ConfirmDialog/ConfirmDialog';
-import { toast } from 'react-toastify';
-import ToastMessage from '../UI/ToastMessage/ToastMessage';
+import React, { useState } from "react";
+import styles from "./TrackBulkActions.module.css";
+import ConfirmDialog from "../UI/ConfirmDialog/ConfirmDialog";
+import { toast } from "react-toastify";
+import ToastMessage from "../UI/ToastMessage/ToastMessage";
 
 interface Props {
   selectionMode: boolean;
@@ -26,10 +26,14 @@ const TrackBulkActions: React.FC<Props> = ({
   const handleConfirmDelete = async () => {
     try {
       await onBulkDelete(); // якщо це async
-      toast.success(<ToastMessage message="Tracks deleted successfully" type="success" />);
+      toast.success(
+        <ToastMessage message="Tracks deleted successfully" type="success" />,
+      );
     } catch (err) {
-      console.error('Failed to delete tracks', err);
-      toast.error(<ToastMessage message="Failed to delete tracks" type="error" />);
+      console.error("Failed to delete tracks", err);
+      toast.error(
+        <ToastMessage message="Failed to delete tracks" type="error" />,
+      );
     } finally {
       setShowConfirm(false);
     }
@@ -37,8 +41,12 @@ const TrackBulkActions: React.FC<Props> = ({
 
   return (
     <div className={styles.wrapper}>
-      <button onClick={onToggleMode} className={styles.button} data-testid="toggle-selection-mode">
-        {selectionMode ? 'Cancel' : 'Bulk select'}
+      <button
+        onClick={onToggleMode}
+        className={styles.button}
+        data-testid="toggle-selection-mode"
+      >
+        {selectionMode ? "Cancel" : "Bulk select"}
       </button>
 
       {selectionMode && (
@@ -46,7 +54,11 @@ const TrackBulkActions: React.FC<Props> = ({
           <span data-testid="selection-count">
             Selected: {selectedCount} / {totalCount}
           </span>
-          <button onClick={onSelectAll} className={styles.button} data-testid="select-all">
+          <button
+            onClick={onSelectAll}
+            className={styles.button}
+            data-testid="select-all"
+          >
             Select all
           </button>
           <button
