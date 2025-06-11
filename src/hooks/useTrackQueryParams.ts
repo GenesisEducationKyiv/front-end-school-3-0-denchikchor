@@ -16,6 +16,7 @@ export function useTrackQueryParams() {
     params.get("page"),
     O.fromNullable,
     O.map((s) => parseInt(s, 10)),
+    O.filter<number>(Number.isFinite),
     O.getWithDefault<number>(1),
   );
 
@@ -24,6 +25,7 @@ export function useTrackQueryParams() {
     params.get("limit"),
     O.fromNullable,
     O.map((s) => parseInt(s, 10)),
+    O.filter<number>(Number.isFinite),
     O.getWithDefault<number>(10),
   );
 
@@ -68,20 +70,27 @@ export function useTrackQueryParams() {
     [page, limit, sort, order, searchText, genre],
   );
 
-  // function to update a single query param and replace the URL
-  const setParam = useCallback(
-    <K extends keyof TracksQueryParams>(
-      key: K,
-      value: TracksQueryParams[K] | undefined,
-    ) => {
-      const p = new URLSearchParams(window.location.search);
-      if (value == null || value === "") p.delete(key as string);
-      else p.set(key as string, String(value));
-      void navigate({ search: p.toString() }, { replace: true });
-    },
-    [navigate],
-  );
+  //Bulk‐update URL query parameters in one navigation action.
+  const setParams = useCallback(
+  (updates: Partial<TracksQueryParams>) => {
+    const p = new URLSearchParams(window.location.search);
+
+    (Object.entries(updates) as [keyof TracksQueryParams, TracksQueryParams[keyof TracksQueryParams]][])
+      .forEach(([key, value]) => {
+        if (value == null || value === "") {
+          p.delete(key as string);
+        } else {
+          p.set(key as string, String(value));
+        }
+      });
+      
+    // Replace the current history entry with the updated search string
+    void navigate({ search: p.toString() }, { replace: true });
+  },
+  [navigate],
+);
+
 
   // expose the current query and setter
-  return { query, setParam };
+  return { query, setParams };
 }
