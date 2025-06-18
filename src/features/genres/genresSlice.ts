@@ -6,17 +6,14 @@ export const fetchGenres = createAsyncThunk<
   string[],
   void,
   { rejectValue: ApiError }
->(
-  "genres/fetchGenres",
-  async (_, thunkAPI) => {
-    const result = await getGenres();
-    if (result.isOk()) {
-      return result.value;
-    } else {
-      return thunkAPI.rejectWithValue(result.error);
-    }
+>("genres/fetchGenres", async (_, thunkAPI) => {
+  const result = await getGenres();
+  if (result.isOk()) {
+    return result.value;
+  } else {
+    return thunkAPI.rejectWithValue(result.error);
   }
-);
+});
 
 interface GenresState {
   items: string[];
@@ -46,7 +43,9 @@ const genresSlice = createSlice({
       })
       .addCase(fetchGenres.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.payload ? action.payload.message : action.error.message;
+        state.error = action.payload
+          ? action.payload.message
+          : action.error.message;
       }),
 });
 

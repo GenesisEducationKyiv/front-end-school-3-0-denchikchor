@@ -30,7 +30,7 @@ export const getTracks = async (
     axios.get<TracksResponseRaw>(`${API_BASE}/tracks`, {
       params: cleanedParams,
     }),
-    mapAxiosError
+    mapAxiosError,
   );
 
   return axiosResult.map((response) => {
@@ -70,7 +70,7 @@ export const createTrack = async (
 ): Promise<Result<void, ApiError>> => {
   const result = await fromPromise(
     axios.post(`${API_BASE}/tracks`, payload),
-    mapAxiosError
+    mapAxiosError,
   );
 
   return result.map(() => void 0);
@@ -82,7 +82,7 @@ export const editTrack = async (
 ): Promise<Result<Track, ApiError>> => {
   const result = await fromPromise(
     axios.put<Track>(`${API_BASE}/tracks/${payload.id}`, payload),
-    mapAxiosError
+    mapAxiosError,
   );
 
   return result.map((r) => r.data);
@@ -94,7 +94,7 @@ export const deleteTrack = async (
 ): Promise<Result<void, ApiError>> => {
   const result = await fromPromise(
     axios.delete(`${API_BASE}/tracks/${id}`),
-    mapAxiosError
+    mapAxiosError,
   );
 
   return result.map(() => void 0);
@@ -112,7 +112,7 @@ export const uploadTrackFile = async (
 ): Promise<Result<Track, ApiError>> => {
   const result = await fromPromise(
     axios.post<Track>(`${API_BASE}/tracks/${id}/upload`, file),
-    mapAxiosError
+    mapAxiosError,
   );
 
   return result.map((r) => r.data);
@@ -128,7 +128,7 @@ export const removeTrackFile = async (
 ): Promise<Result<void, ApiError>> => {
   const result = await fromPromise(
     axios.delete(`${API_BASE}/tracks/${id}/file`),
-    mapAxiosError
+    mapAxiosError,
   );
 
   return result.map(() => void 0);
