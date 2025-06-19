@@ -19,6 +19,7 @@ const TrackFilters: React.FC<Props> = ({
       <div className={styles.customSelectWrapper}>
         <select
           value={selectedGenre}
+          aria-label="Genre"
           onChange={(e) => {
             onGenreChange(e.target.value);
             setCurrentPage(1);

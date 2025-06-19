@@ -15,7 +15,7 @@ export const fetchGenres = createAsyncThunk<
   }
 });
 
-interface GenresState {
+export interface GenresState {
   items: string[];
   status: "idle" | "loading" | "succeeded" | "failed";
   error?: string;

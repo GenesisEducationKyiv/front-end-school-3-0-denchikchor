@@ -44,7 +44,11 @@ const TrackCreateModal: React.FC<Props> = ({ onClose, onCreated }) => {
       onCreated();
       onClose();
       toast.success(
-        <ToastMessage message="Track successfully added!" type="success" />,
+        <ToastMessage
+          message="Track successfully added!"
+          type="success"
+          data-testid="toast-success"
+        />,
       );
     } catch (error) {
       console.error("Error creating track:", error);

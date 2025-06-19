@@ -48,7 +48,13 @@ const TrackEditModal: React.FC<Props> = ({ track, onClose, onDelete }) => {
   const handleDelete = async () => {
     try {
       await onDelete(track.id);
-      toast.success(<ToastMessage message="Track deleted" type="success" />);
+      toast.success(
+        <ToastMessage
+          message="Track deleted"
+          type="success"
+          data-testid="toast-delete-success"
+        />,
+      );
       onClose();
     } catch (err) {
       console.error("Delete error:", err);
