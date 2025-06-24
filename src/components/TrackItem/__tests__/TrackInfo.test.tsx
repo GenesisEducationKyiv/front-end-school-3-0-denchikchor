@@ -13,9 +13,9 @@ describe("TrackInfo", () => {
       />,
     );
 
-    expect(screen.getByText("Imagine")).toBeInTheDocument();
+    expect(screen.getByText("Imagine")).toBeInTheDocument(); // title
     expect(screen.getByText("John Lennon")).toBeInTheDocument();
-    expect(screen.getByText("Best of Lennon")).toBeInTheDocument();
+    expect(screen.getByText("Best of Lennon")).toBeInTheDocument(); // album
     expect(screen.getByText("rock")).toBeInTheDocument();
     expect(screen.getByText("classic")).toBeInTheDocument();
   });

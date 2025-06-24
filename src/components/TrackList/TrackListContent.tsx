@@ -29,7 +29,7 @@ const TrackListContent: React.FC<Props> = ({
   toggleTrackSelection,
 }) => {
   if (tracks.length === 0) {
-    return <p className={styles.noResults}>Nothing found</p>;
+    return <p className={styles.noResults}>Нічого не знайдено</p>;
   }
 
   return (
