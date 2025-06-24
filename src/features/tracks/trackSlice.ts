@@ -124,7 +124,7 @@ export const removeTrackFile = createAsyncThunk<
 /**
  * Represents the shape of the tracks slice state.
  */
-interface TracksState {
+export interface TracksState {
   items: Track[];
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
