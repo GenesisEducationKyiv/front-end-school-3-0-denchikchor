@@ -1,5 +1,3 @@
-// src/features/tracks/trackSlice.ts
-
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { Track, TracksQueryParams, TracksResponse } from "./types";
 import type { AppDispatch } from "../../store";
@@ -13,6 +11,8 @@ import {
   removeTrackFile as apiRemoveTrackFile,
 } from "../../api/tracks";
 import type { ApiError } from "../../api/apiErrors";
+import type { RootState } from "../../store";
+
 
 /**
  * Async thunk to fetch tracks with support for filtering, sorting, and pagination.
@@ -254,3 +254,8 @@ const tracksSlice = createSlice({
 });
 
 export default tracksSlice.reducer;
+export const selectAllTracks = (state: RootState) => state.tracks.items;
+
+
+export const selectTrackById = (state: RootState, id: string) =>
+  state.tracks.items.find((track) => track.id === id);
