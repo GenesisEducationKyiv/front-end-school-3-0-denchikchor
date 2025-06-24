@@ -22,6 +22,7 @@
     "types": ["vitest/globals"]
   },
   "include": [
-    "src"
+    "src",
+    "tests/**/*"
   ]
 }
