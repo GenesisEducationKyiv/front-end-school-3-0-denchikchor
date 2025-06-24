@@ -20,7 +20,9 @@ describe("SearchInput (white-box)", () => {
   });
 
   it("registers and removes the Escape keydown listener", () => {
-    const { unmount } = render(<SearchInput value="test" onChange={onChange} />);
+    const { unmount } = render(
+      <SearchInput value="test" onChange={onChange} />,
+    );
 
     // Verify that addEventListener was called
     expect(addSpy).toHaveBeenCalledWith("keydown", expect.any(Function));

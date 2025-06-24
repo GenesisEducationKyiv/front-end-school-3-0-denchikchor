@@ -10,9 +10,8 @@ const navigateMock = vi.fn();
 // 2) Mock react-router-dom before import anything that calls useNavigate
 vi.mock("react-router-dom", async () => {
   // import the real module so we don’t lose useLocation
-  const actual: typeof import("react-router-dom") = await vi.importActual(
-    "react-router-dom"
-  );
+  const actual: typeof import("react-router-dom") =
+    await vi.importActual("react-router-dom");
   return {
     ...actual,
     useNavigate: () => navigateMock,
@@ -27,9 +26,7 @@ function HookTester() {
       <span data-testid="query">{JSON.stringify(query)}</span>
       <button
         data-testid="update"
-        onClick={() =>
-          setParams({ page: 2, search: "foo", genre: "" })
-        }
+        onClick={() => setParams({ page: 2, search: "foo", genre: "" })}
       />
     </>
   );
@@ -38,12 +35,9 @@ function HookTester() {
 // 4) Wrapper for MemoryRouter
 const wrapper =
   (initialEntries: string[]) =>
-  ({ children }: { children: React.ReactNode }) =>
-    (
-      <MemoryRouter initialEntries={initialEntries}>
-        {children}
-      </MemoryRouter>
-    );
+  ({ children }: { children: React.ReactNode }) => (
+    <MemoryRouter initialEntries={initialEntries}>{children}</MemoryRouter>
+  );
 
 describe("useTrackQueryParams (logic-only integration)", () => {
   beforeEach(() => {
@@ -64,19 +58,16 @@ describe("useTrackQueryParams (logic-only integration)", () => {
         order: "asc",
         search: undefined,
         genre: undefined,
-      })
+      }),
     );
   });
 
   it("parses provided URL params correctly", () => {
-    render(
-      <HookTester />,
-      {
-        wrapper: wrapper([
-          "/tracks?page=3&limit=7&sort=title&order=desc&search=bar&genre=jazz",
-        ]),
-      }
-    );
+    render(<HookTester />, {
+      wrapper: wrapper([
+        "/tracks?page=3&limit=7&sort=title&order=desc&search=bar&genre=jazz",
+      ]),
+    });
     expect(screen.getByTestId("query")).toHaveTextContent(
       JSON.stringify({
         page: 3,
@@ -85,7 +76,7 @@ describe("useTrackQueryParams (logic-only integration)", () => {
         order: "desc",
         search: "bar",
         genre: "jazz",
-      })
+      }),
     );
   });
 
@@ -94,7 +85,7 @@ describe("useTrackQueryParams (logic-only integration)", () => {
     fireEvent.click(screen.getByTestId("update"));
     expect(navigateMock).toHaveBeenCalledWith(
       { search: "page=2&search=foo" },
-      { replace: true }
+      { replace: true },
     );
   });
 });

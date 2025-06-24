@@ -72,24 +72,27 @@ export function useTrackQueryParams() {
 
   //Bulk‐update URL query parameters in one navigation action.
   const setParams = useCallback(
-  (updates: Partial<TracksQueryParams>) => {
-    const p = new URLSearchParams(window.location.search);
+    (updates: Partial<TracksQueryParams>) => {
+      const p = new URLSearchParams(window.location.search);
 
-    (Object.entries(updates) as [keyof TracksQueryParams, TracksQueryParams[keyof TracksQueryParams]][])
-      .forEach(([key, value]) => {
+      (
+        Object.entries(updates) as [
+          keyof TracksQueryParams,
+          TracksQueryParams[keyof TracksQueryParams],
+        ][]
+      ).forEach(([key, value]) => {
         if (value == null || value === "") {
           p.delete(key as string);
         } else {
           p.set(key as string, String(value));
         }
       });
-      
-    // Replace the current history entry with the updated search string
-    void navigate({ search: p.toString() }, { replace: true });
-  },
-  [navigate],
-);
 
+      // Replace the current history entry with the updated search string
+      void navigate({ search: p.toString() }, { replace: true });
+    },
+    [navigate],
+  );
 
   // expose the current query and setter
   return { query, setParams };

@@ -29,7 +29,7 @@ export function useTrackList(searchQuery: string) {
           <ToastMessage
             message={`Failed to load genres: ${err.message}`}
             type="error"
-          />
+          />,
         );
       });
   }, [dispatch]);
@@ -43,12 +43,14 @@ export function useTrackList(searchQuery: string) {
 
   // fetch tracks whenever URL params change
   useEffect(() => {
-    dispatch(fetchTracks(params)).unwrap().catch((err: Error) => {
+    dispatch(fetchTracks(params))
+      .unwrap()
+      .catch((err: Error) => {
         toast.error(
           <ToastMessage
             message={`Failed to load tracks: ${err.message}`}
             type="error"
-          />
+          />,
         );
       });
   }, [dispatch, params]);
@@ -56,8 +58,8 @@ export function useTrackList(searchQuery: string) {
   // scroll to top on page change
   useEffect(() => {
     if (typeof window !== "undefined") {
-        window.scrollTo({ top: 0 });
-  }
+      window.scrollTo({ top: 0 });
+    }
   }, [params.page]);
 
   // single‐track deletion
@@ -69,7 +71,7 @@ export function useTrackList(searchQuery: string) {
   // genre filter handler
   const onGenreChange = useCallback(
     (genre: string) => {
-      setParams({genre: genre || undefined, page: 1});
+      setParams({ genre: genre || undefined, page: 1 });
     },
     [setParams],
   );
@@ -78,22 +80,22 @@ export function useTrackList(searchQuery: string) {
   const onSortChange = useCallback(
     (field: "" | "title" | "artist") => {
       setParams({
-      sort: field,
-      order: params.sort === field && params.order === "asc" ? "desc" : "asc",
-      page: 1,
-    });
+        sort: field,
+        order: params.sort === field && params.order === "asc" ? "desc" : "asc",
+        page: 1,
+      });
     },
     [params.sort, params.order, setParams],
   );
 
   // toggle sort direction
   const onDirectionToggle = useCallback(() => {
-    setParams({order: params.order === "asc" ? "desc" : "asc", page: 1});
+    setParams({ order: params.order === "asc" ? "desc" : "asc", page: 1 });
   }, [params.order, setParams]);
 
   // pagination handler
   const onPageChange = useCallback(
-    (newPage: number) => setParams({page: newPage}),
+    (newPage: number) => setParams({ page: newPage }),
     [setParams],
   );
 
