@@ -3,29 +3,32 @@ import styles from "./TrackBulkActions.module.css";
 import ConfirmDialog from "../UI/ConfirmDialog/ConfirmDialog";
 import { toast } from "react-toastify";
 import ToastMessage from "../UI/ToastMessage/ToastMessage";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store";
+import { selectAllTracks, deleteTrack, fetchTracks } from "../../features/tracks/trackSlice";
+import { useTrackSelection } from "../../hooks/useTrackSelection";
+import { useTrackQueryParams } from "../../hooks/useTrackQueryParams";
 
-interface Props {
-  selectionMode: boolean;
-  selectedCount: number;
-  totalCount: number;
-  onToggleMode: () => void;
-  onSelectAll: () => void;
-  onBulkDelete: () => void;
-}
+const TrackBulkActions: React.FC = () => {
+  const { query: params } = useTrackQueryParams();
 
-const TrackBulkActions: React.FC<Props> = ({
-  selectionMode,
-  selectedCount,
-  totalCount,
-  onToggleMode,
-  onSelectAll,
-  onBulkDelete,
-}) => {
+  const {
+    selectionMode,
+    selectedTracks,
+    toggleSelectionMode,
+    handleSelectAll,
+    handleBulkDelete,
+  } = useTrackSelection();
+
+  // Total count of tracks
+  const allTracks = useSelector((state: RootState) => selectAllTracks(state));
+  const totalCount = allTracks.length;
+
   const [showConfirm, setShowConfirm] = useState(false);
 
   const handleConfirmDelete = async () => {
     try {
-      await onBulkDelete(); // якщо це async
+      await handleBulkDelete(selectedTracks, params);
       toast.success(
         <ToastMessage message="Tracks deleted successfully" type="success" />,
       );
@@ -42,7 +45,7 @@ const TrackBulkActions: React.FC<Props> = ({
   return (
     <div className={styles.wrapper}>
       <button
-        onClick={onToggleMode}
+        onClick={toggleSelectionMode}
         className={styles.button}
         data-testid="toggle-selection-mode"
       >
@@ -52,10 +55,10 @@ const TrackBulkActions: React.FC<Props> = ({
       {selectionMode && (
         <div className={styles.controls}>
           <span data-testid="selection-count">
-            Selected: {selectedCount} / {totalCount}
+            Selected: {selectedTracks.length} / {totalCount}
           </span>
           <button
-            onClick={onSelectAll}
+            onClick={() => handleSelectAll(allTracks.map((t) => t.id))}
             className={styles.button}
             data-testid="select-all"
           >
@@ -63,9 +66,8 @@ const TrackBulkActions: React.FC<Props> = ({
           </button>
           <button
             onClick={() => setShowConfirm(true)}
-            disabled={selectedCount === 0}
-            data-loading={selectedCount === 0}
-            aria-disabled={selectedCount === 0}
+            disabled={selectedTracks.length === 0}
+            aria-disabled={selectedTracks.length === 0}
             data-testid="delete-selected"
             className={styles.dangerButton}
           >
