@@ -1,0 +1,113 @@
+{
+  "version": "0.1.0",
+  "name": "music-app",
+  "problems": [
+    "extraneous: @mobily/ts-belt@3.13.1 /Users/denissokolov/Documents/GitHub/front-end-school-3-0-denchikchor/node_modules/@mobily/ts-belt"
+  ],
+  "dependencies": {
+    "@hookform/resolvers": {
+      "version": "5.0.1",
+      "resolved": "https://registry.npmjs.org/@hookform/resolvers/-/resolvers-5.0.1.tgz",
+      "overridden": false
+    },
+    "@mobily/ts-belt": {
+      "version": "3.13.1",
+      "resolved": "https://registry.npmjs.org/@mobily/ts-belt/-/ts-belt-3.13.1.tgz",
+      "overridden": false,
+      "extraneous": true,
+      "problems": [
+        "extraneous: @mobily/ts-belt@3.13.1 /Users/denissokolov/Documents/GitHub/front-end-school-3-0-denchikchor/node_modules/@mobily/ts-belt"
+      ]
+    },
+    "@radix-ui/react-dialog": {
+      "version": "1.1.11",
+      "resolved": "https://registry.npmjs.org/@radix-ui/react-dialog/-/react-dialog-1.1.11.tgz",
+      "overridden": false
+    },
+    "@reduxjs/toolkit": {
+      "version": "2.7.0",
+      "resolved": "https://registry.npmjs.org/@reduxjs/toolkit/-/toolkit-2.7.0.tgz",
+      "overridden": false
+    },
+    "@testing-library/dom": {
+      "version": "10.4.0",
+      "resolved": "https://registry.npmjs.org/@testing-library/dom/-/dom-10.4.0.tgz",
+      "overridden": false
+    },
+    "@types/react-dom": {
+      "version": "19.1.2",
+      "resolved": "https://registry.npmjs.org/@types/react-dom/-/react-dom-19.1.2.tgz",
+      "overridden": false
+    },
+    "@types/react": {
+      "version": "19.1.2",
+      "resolved": "https://registry.npmjs.org/@types/react/-/react-19.1.2.tgz",
+      "overridden": false
+    },
+    "axios": {
+      "version": "1.8.4",
+      "resolved": "https://registry.npmjs.org/axios/-/axios-1.8.4.tgz",
+      "overridden": false
+    },
+    "classnames": {
+      "version": "2.5.1",
+      "resolved": "https://registry.npmjs.org/classnames/-/classnames-2.5.1.tgz",
+      "overridden": false
+    },
+    "clsx": {
+      "version": "2.1.1",
+      "resolved": "https://registry.npmjs.org/clsx/-/clsx-2.1.1.tgz",
+      "overridden": false
+    },
+    "neverthrow": {
+      "version": "8.2.0",
+      "resolved": "https://registry.npmjs.org/neverthrow/-/neverthrow-8.2.0.tgz",
+      "overridden": false
+    },
+    "react-dom": {
+      "version": "19.1.0",
+      "resolved": "https://registry.npmjs.org/react-dom/-/react-dom-19.1.0.tgz",
+      "overridden": false
+    },
+    "react-hook-form": {
+      "version": "7.56.4",
+      "resolved": "https://registry.npmjs.org/react-hook-form/-/react-hook-form-7.56.4.tgz",
+      "overridden": false
+    },
+    "react-redux": {
+      "version": "9.2.0",
+      "resolved": "https://registry.npmjs.org/react-redux/-/react-redux-9.2.0.tgz",
+      "overridden": false
+    },
+    "react-router-dom": {
+      "version": "7.5.2",
+      "resolved": "https://registry.npmjs.org/react-router-dom/-/react-router-dom-7.5.2.tgz",
+      "overridden": false
+    },
+    "react-toastify": {
+      "version": "11.0.5",
+      "resolved": "https://registry.npmjs.org/react-toastify/-/react-toastify-11.0.5.tgz",
+      "overridden": false
+    },
+    "react": {
+      "version": "19.1.0",
+      "resolved": "https://registry.npmjs.org/react/-/react-19.1.0.tgz",
+      "overridden": false
+    },
+    "typescript": {
+      "version": "4.9.5",
+      "resolved": "https://registry.npmjs.org/typescript/-/typescript-4.9.5.tgz",
+      "overridden": false
+    },
+    "web-vitals": {
+      "version": "2.1.4",
+      "resolved": "https://registry.npmjs.org/web-vitals/-/web-vitals-2.1.4.tgz",
+      "overridden": false
+    },
+    "zod": {
+      "version": "3.25.42",
+      "resolved": "https://registry.npmjs.org/zod/-/zod-3.25.42.tgz",
+      "overridden": false
+    }
+  }
+}
