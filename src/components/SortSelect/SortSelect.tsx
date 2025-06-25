@@ -1,25 +1,25 @@
 import React from "react";
 import styles from "./SortSelect.module.css";
+import { useTrackQueryParams } from "../../hooks/useTrackQueryParams";
 
-interface Props {
-  value: "" | "title" | "artist";
-  direction: "asc" | "desc";
-  onChange: (value: "title" | "artist" | "") => void;
-  onToggleDirection: () => void;
-}
+const SortSelect: React.FC = () => {
+  const { query: params, setParams } = useTrackQueryParams();
+  const value = params.sort || "";
+  const direction = params.order || "asc";
 
-const SortSelect: React.FC<Props> = ({
-  value,
-  direction,
-  onChange,
-  onToggleDirection,
-}) => {
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setParams({ sort: e.target.value as "" | "title" | "artist", page: 1 });
+  };
+  const handleToggleDirection = () => {
+    setParams({ order: direction === "asc" ? "desc" : "asc", page: 1 });
+  };
+
   return (
     <div className={styles.sortWrapper}>
       <div className={styles.customSelectWrapper}>
         <select
           value={value}
-          onChange={(e) => onChange(e.target.value as Props["value"])}
+          onChange={handleChange}
           className={styles.select}
           data-testid="sort-select"
         >
@@ -32,14 +32,10 @@ const SortSelect: React.FC<Props> = ({
           viewBox="0 0 12 8"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <polyline
-            points="1,1 6,6 11,1"
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
+          <polyline points="1,1 6,6 11,1" strokeWidth="2" strokeLinecap="round" />
         </svg>
       </div>
-      <button onClick={onToggleDirection} className={styles.toggleButton}>
+      <button onClick={handleToggleDirection} className={styles.toggleButton}>
         {direction === "asc" ? "↑" : "↓"}
       </button>
     </div>

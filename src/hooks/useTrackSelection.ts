@@ -1,73 +1,56 @@
-import { useState } from "react";
 import { useAppDispatch } from "./redux-hook";
 import { deleteTrack, fetchTracks } from "../features/tracks/trackSlice";
-import { TracksQueryParams } from "../features/tracks/types";
+import { 
+  toggleSelectionMode, 
+  toggleTrackSelection, 
+  selectSelectionMode, 
+  selectSelectedIds, 
+  clearSelection,
+  selectAll as selectAllTracksIds
+} from "../features/bulk-selection/selectionSlice";
+import type { TracksQueryParams } from "../features/tracks/types";
+import { useSelector } from "react-redux";
 
-/**
- * Custom hook for managing bulk selection and deletion of tracks.
- * Provides selection mode state, selected track IDs, and handlers to toggle selection,
- * select all, and perform bulk deletion with re-fetching.
- */
+// Hook for managing bulk selection and deletion of tracks via Redux state.
 export const useTrackSelection = () => {
   const dispatch = useAppDispatch();
 
-  // Flag to determine if bulk selection mode is active
-  const [selectionMode, setSelectionMode] = useState(false);
-  // Array of selected track IDs
-  const [selectedTracks, setSelectedTracks] = useState<string[]>([]);
+  // Read selection mode and selected IDs from Redux
+  const selectionMode = useSelector(selectSelectionMode);
+  const selectedTracks = useSelector(selectSelectedIds);
 
-  /**
-   * Toggle bulk selection mode on or off.
-   * When toggling off, clear any selected tracks.
-   */
-  const toggleSelectionMode = () => {
-    setSelectionMode((prev) => !prev);
-    setSelectedTracks([]);
+  // Toggle selection mode on/off
+  const onToggleSelectionMode = () => {
+    dispatch(toggleSelectionMode());
   };
 
-  /**
-   * Toggle selection for a single track ID.
-   * If already selected, unselect it; otherwise, add to selection.
-   */
-  const toggleTrackSelection = (id: string) => {
-    setSelectedTracks((prev) =>
-      prev.includes(id) ? prev.filter((tid) => tid !== id) : [...prev, id],
-    );
+  // Toggle a single track selection
+  const onToggleTrackSelection = (id: string) => {
+    dispatch(toggleTrackSelection(id));
   };
 
-  /**
-   * Select all given track IDs.
-   */
-  const handleSelectAll = (ids: string[]) => {
-    setSelectedTracks(ids);
+  // Select all provided IDs
+  const onSelectAll = (ids: string[]) => {
+    dispatch(selectAllTracksIds(ids));
   };
 
-  /**
-   * Delete multiple selected tracks and re-fetch the list with the same query parameters.
-   * @param selectedIds - array of track IDs to delete
-   * @param params - current query parameters for fetching tracks
-   */
-  const handleBulkDelete = async (
-    selectedIds: string[],
-    params: TracksQueryParams,
-  ) => {
-    // Perform deletion for each selected track
-    await Promise.all(selectedIds.map((id) => dispatch(deleteTrack(id))));
-    // Re-fetch tracks with existing query parameters
-    await dispatch(fetchTracks(params))
-      .unwrap()
-      .catch((error) => console.error("Failed to fetch tracks:", error));
-    // Reset selection state
-    setSelectedTracks([]);
-    setSelectionMode(false);
+  // Bulk delete selected tracks and refetch
+  const onBulkDelete = async (ids: string[], params: TracksQueryParams) => {
+    // Delete each track
+    await Promise.all(ids.map((id) => dispatch(deleteTrack(id)).unwrap()));
+    // Refetch tracks
+    await dispatch(fetchTracks(params)).unwrap().catch((err) => console.error(err));
+    // Clear selection and exit selection mode
+    dispatch(clearSelection());
+    dispatch(toggleSelectionMode());
   };
 
   return {
     selectionMode,
     selectedTracks,
-    toggleSelectionMode,
-    toggleTrackSelection,
-    handleSelectAll,
-    handleBulkDelete,
+    toggleSelectionMode: onToggleSelectionMode,
+    toggleTrackSelection: onToggleTrackSelection,
+    handleSelectAll: onSelectAll,
+    handleBulkDelete: onBulkDelete,
   };
 };
