@@ -1,7 +1,5 @@
 import { client } from "../apollo/client";
-import {
-  gql,
-} from "@apollo/client";
+import { gql } from "@apollo/client";
 import { fromPromise, ok, err, type Result } from "neverthrow";
 import type { ApiError } from "./apiErrors";
 import type {
@@ -10,6 +8,7 @@ import type {
   TracksResponse,
 } from "../features/tracks/types";
 
+// --- Queries & Mutations ---
 const GET_TRACKS = gql`
   query GetTracks(
     $page: Int, $limit: Int, $sort: String, $order: String,
@@ -60,15 +59,15 @@ const UPLOAD_TRACK_FILE = gql`
   }
 `;
 
-const REMOVE_TRACK_FILE = gql`
-  mutation RemoveTrackFile($id: ID!) {
-    removeTrackFile(id: $id) {
+const DELETE_TRACK_FILE = gql`
+  mutation DeleteTrackFile($id: ID!) {
+    deleteTrackFile(id: $id) {
       id audioFile
     }
   }
 `;
 
-
+// --- Payload Interfaces ---
 export interface CreateTrackPayload {
   title: string;
   artist: string;
@@ -81,12 +80,19 @@ export interface EditTrackPayload extends CreateTrackPayload {
   id: string;
 }
 
+// --- Helper for safe error messages ---
+function getErrorMessage(e: unknown): string {
+  return e instanceof Error ? e.message : String(e);
+}
+
+// --- API Functions ---
 export const getTracks = async (
   params: TracksQueryParams = {}
 ): Promise<Result<TracksResponse, ApiError>> => {
   const variables = Object.fromEntries(
     Object.entries(params).filter(([, v]) => v != null && v !== "")
   );
+
   const promise = client.query<{
     tracks: { data: Track[]; meta: { total: number; page: number; limit: number; totalPages: number } };
   }>({
@@ -95,7 +101,10 @@ export const getTracks = async (
     fetchPolicy: "network-only",
   });
 
-  const result = await fromPromise(promise, (err) => ({ message: err.message }));
+  const result = await fromPromise(
+    promise,
+    (e: unknown) => ({ message: getErrorMessage(e) })
+  );
   return result.map((res) => {
     const { data, meta } = res.data.tracks;
     return {
@@ -116,7 +125,10 @@ export const createTrack = async (
     variables: { input: payload },
   });
 
-  const result = await fromPromise(promise, (err) => ({ message: err.message }));
+  const result = await fromPromise(
+    promise,
+    (e: unknown) => ({ message: getErrorMessage(e) })
+  );
   return result.map((res) => res.data!.createTrack);
 };
 
@@ -127,13 +139,13 @@ export const editTrack = async (
 
   const promise = client.mutate<{ updateTrack: Track }>({
     mutation: UPDATE_TRACK,
-    variables: {
-      id,       
-      input,    
-    },
+    variables: { id, input },
   });
 
-  const result = await fromPromise(promise, (err) => ({ message: err.message }));
+  const result = await fromPromise(
+    promise,
+    (e: unknown) => ({ message: getErrorMessage(e) })
+  );
   return result.map((res) => res.data!.updateTrack);
 };
 
@@ -145,7 +157,10 @@ export const deleteTrack = async (
     variables: { id },
   });
 
-  const result = await fromPromise(promise, (e) => ({ message: e.message }));
+  const result = await fromPromise(
+    promise,
+    (e: unknown) => ({ message: getErrorMessage(e) })
+  );
   return result.andThen((res) =>
     res.data!.deleteTrack
       ? ok(undefined)
@@ -162,18 +177,24 @@ export const uploadTrackFile = async (
     variables: { id, file },
   });
 
-  const result = await fromPromise(promise, (err) => ({ message: err.message }));
+  const result = await fromPromise(
+    promise,
+    (e: unknown) => ({ message: getErrorMessage(e) })
+  );
   return result.map((res) => res.data!.uploadTrackFile);
 };
 
 export const removeTrackFile = async (
   id: string
 ): Promise<Result<Track, ApiError>> => {
-  const promise = client.mutate<{ removeTrackFile: Track }>({
-    mutation: REMOVE_TRACK_FILE,
+  const promise = client.mutate<{ deleteTrackFile: Track }>({
+    mutation: DELETE_TRACK_FILE,
     variables: { id },
   });
 
-  const result = await fromPromise(promise, (err) => ({ message: err.message }));
-  return result.map((res) => res.data!.removeTrackFile);
+  const result = await fromPromise(
+    promise,
+    (e: unknown) => ({ message: getErrorMessage(e) })
+  );
+  return result.map((res) => res.data!.deleteTrackFile);
 };
