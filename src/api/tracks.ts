@@ -52,11 +52,20 @@ const DELETE_TRACK = gql`
 `;
 
 const UPLOAD_TRACK_FILE = gql`
-  mutation UploadTrackFile($id: ID!, $file: Upload!) {
-    uploadTrackFile(id: $id, file: $file) {
-      id audioFile
-    }
-  }
+   mutation UploadTrackFile($id: ID!, $file: Upload!) {
+      uploadTrackFile(id: $id, file: $file) {
+         id
+         title
+         artist
+         album
+         genres
+         slug
+         coverImage
+         audioFile
+         createdAt
+         updatedAt
+      }
+   }
 `;
 
 const DELETE_TRACK_FILE = gql`

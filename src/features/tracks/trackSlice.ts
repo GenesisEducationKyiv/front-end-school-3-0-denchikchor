@@ -94,15 +94,18 @@ export const deleteTrack = createAsyncThunk<
  */
 export const uploadTrackFile = createAsyncThunk<
   Track,
-  { id: string; file: FormData },
+  { id: string; file: File },
   { rejectValue: ApiError }
->("tracks/uploadTrackFile", async ({ id, file }, { rejectWithValue }) => {
-  const result = await apiUploadTrackFile(id, file);
-  if (result.isErr()) {
-    return rejectWithValue(result.error);
+>(
+  "tracks/uploadTrackFile",
+  async ({ id, file }, { rejectWithValue }) => {
+    const result = await apiUploadTrackFile(id, file);
+    if (result.isErr()) {
+      return rejectWithValue(result.error);
+    }
+    return result.value;
   }
-  return result.value;
-});
+);
 
 /**
  * Async thunk to remove the audio file from a specific track.

@@ -1,4 +1,6 @@
 export const typeDefs = `
+scalar Upload
+
   type Track {
     id: ID!
     title: String!
@@ -60,5 +62,7 @@ export const typeDefs = `
     updateTrack(id: ID!, input: UpdateTrackInput!): Track!
     deleteTrack(id: ID!): Boolean!
     deleteTracks(ids: [ID!]!): BatchDeleteResponse!
+    uploadTrackFile(id: ID!, file: Upload!): Track!
+    deleteTrackFile(id: ID!): Track!
   }
 `; 

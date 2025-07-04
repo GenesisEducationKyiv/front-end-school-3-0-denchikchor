@@ -1,188 +1,166 @@
-import {
-  getGenres,
-  getTracks,
-  createTrack as dbCreateTrack,
-  updateTrack as dbUpdateTrack,
-  getTrackById,
-  deleteTrack as dbDeleteTrack,
-  deleteMultipleTracks as dbDeleteMultipleTracks,
-  saveAudioFile,
-  deleteAudioFile,
-  getTrackBySlug,
-} from '../utils/db';
+import { getGenres, getTracks, createTrack, updateTrack, getTrackById, deleteTrack, deleteMultipleTracks, saveAudioFile, deleteAudioFile } from '../utils/db';
+import { getAllTracks, getTrack, addTrack, updateTrackById, removeTrack, removeTracks } from '../controllers/tracks.controller';
 import { createSlug } from '../utils/slug';
 
 export const resolvers = {
   Query: {
     health: async () => 'ok',
     genres: async () => {
-      try {
-        return await getGenres();
-      } catch (error) {
-        console.error('Error in genres resolver:', error);
-        throw new Error('Failed to fetch genres');
-      }
+      return getGenres();
     },
-    tracks: async (_parent: unknown, args: any) => {
-      try {
-        const params = {
-          page: args.page,
-          limit: args.limit,
-          sort: args.sort,
-          order: args.order,
-          search: args.search,
-          genre: args.genre,
-          artist: args.artist,
-        };
-        const { tracks, total } = await getTracks(params);
-        const page = params.page || 1;
-        const limit = params.limit || 10;
-        return {
-          data: tracks,
-          meta: {
-            total,
-            page,
-            limit,
-            totalPages: Math.ceil(total / limit),
-          },
-        };
-      } catch (error) {
-        console.error('Error in tracks resolver:', error);
-        throw new Error('Failed to fetch tracks');
-      }
+    tracks: async (_parent: any, args: any) => {
+      const params = {
+        page: args.page,
+        limit: args.limit,
+        sort: args.sort,
+        order: args.order,
+        search: args.search,
+        genre: args.genre,
+        artist: args.artist,
+      };
+      const { tracks, total } = await getTracks(params);
+      const page = params.page || 1;
+      const limit = params.limit || 10;
+      return {
+        data: tracks,
+        meta: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit)
+        }
+      };
     },
-    track: async (_parent: unknown, args: { slug: string }) => {
-      try {
-        return await getTrackBySlug(args.slug);
-      } catch (error) {
-        console.error('Error in track resolver:', error);
-        throw new Error('Failed to fetch track');
-      }
+    track: async (_parent: any, args: { slug: string }, context: any) => {
+      return getTrack({ ...context.request, params: { slug: args.slug } }, context.reply);
     },
   },
-
   Mutation: {
-    createTrack: async (
-      _parent: unknown,
-      { input }: { input: { title: string; artist: string; album?: string; genres: string[]; coverImage?: string } }
-    ) => {
-      try {
-        const { title, artist, album, genres, coverImage } = input;
-        if (!title || !artist || !genres.length) {
-          throw new Error('Title, artist, and genres are required');
-        }
-        const slug = createSlug(title);
-        const newTrack = await dbCreateTrack({
-          title,
-          artist,
-          album,
-          genres,
-          coverImage,
-          slug,
-        });
-        return newTrack;
-      } catch (error) {
-        console.error('Error in createTrack resolver:', error);
-        throw new Error('Failed to create track');
+    createTrack: async (_parent: any, args: any) => {
+      const { title, artist, album, genres, coverImage } = args.input;
+      if (!title || !artist || !genres) {
+        throw new Error('Title, artist, and genres are required');
       }
+      const slug = createSlug(title);
+      const newTrack = await createTrack({
+        title,
+        artist,
+        album,
+        genres,
+        coverImage,
+        slug
+      });
+      return newTrack;
     },
-
-    updateTrack: async (
-      _parent: unknown,
-      { id, input }: { id: string; input: Partial<{ title: string; artist: string; album?: string; genres: string[]; coverImage?: string }> }
-    ) => {
-      try {
-        const existingTrack = await getTrackById(id);
-        if (!existingTrack) {
-          throw new Error('Track not found');
-        }
-        const updates: any = { ...input };
-        if (input.title && input.title !== existingTrack.title) {
-          updates.slug = createSlug(input.title);
-        }
-        const updated = await dbUpdateTrack(id, updates);
-        if (!updated) {
-          throw new Error('Failed to update track');
-        }
-        return updated;
-      } catch (error) {
-        console.error('Error in updateTrack resolver:', error);
+    updateTrack: async (_parent: any, args: any) => {
+      const { id, input } = args;
+      const existingTrack = await getTrackById(id);
+      if (!existingTrack) {
+        throw new Error('Track not found');
+      }
+      let updates = { ...input };
+      if (input.title && input.title !== existingTrack.title) {
+        const { createSlug } = await import('../utils/slug');
+        updates.slug = createSlug(input.title);
+      }
+      const updated = await updateTrack(id, updates);
+      if (!updated) {
         throw new Error('Failed to update track');
       }
+      return updated;
     },
-
-    deleteTrack: async (_parent: unknown, { id }: { id: string }) => {
-      try {
-        return await dbDeleteTrack(id);
-      } catch (error) {
-        console.error('Error in deleteTrack resolver:', error);
-        throw new Error('Failed to delete track');
-      }
+    deleteTrack: async (_parent: any, args: any) => {
+      const { id } = args;
+      const result = await deleteTrack(id);
+      return result;
     },
-
-    deleteTracks: async (_parent: unknown, { ids }: { ids: string[] }) => {
-      try {
-        return await dbDeleteMultipleTracks(ids);
-      } catch (error) {
-        console.error('Error in deleteTracks resolver:', error);
-        throw new Error('Failed to delete tracks');
-      }
+    deleteTracks: async (_parent: any, args: any) => {
+      const { ids } = args;
+      const result = await deleteMultipleTracks(ids);
+      return result;
     },
+    uploadTrackFile: async (_parent: any, args: any) => {
+         const { id, file } = args;
 
-    uploadTrackFile: async (_parent: unknown, args: any) => {
-      try {
-        const { id, file } = args;
-        const upload = await file;
-        const { filename, mimetype, createReadStream } = upload;
+         try {
+            // Await the file upload
+            const upload = await file;
+            const { filename, mimetype, createReadStream } = upload.file;
 
-        const allowed = ['audio/mpeg', 'audio/wav', 'audio/mp3', 'audio/x-wav'];
-        if (!allowed.includes(mimetype)) {
-          throw new Error('Invalid file type. Only MP3 and WAV allowed.');
-        }
+            // Validate file type
+            const allowedMimeTypes = [
+               'audio/mpeg',
+               'audio/wav',
+               'audio/mp3',
+               'audio/x-wav',
+            ];
+            console.log(
+               '---------------------------UPLOAD:---------------------------',
+               { upload }
+            );
+            console.log(
+               '---------------------------Uploaded file:---------------------------',
+               { filename, mimetype }
+            );
 
-        const stream = createReadStream();
-        const chunks: Buffer[] = [];
-        for await (const chunk of stream) chunks.push(chunk);
-        const buffer = Buffer.concat(chunks);
-        if (buffer.length > 10 * 1024 * 1024) {
-          throw new Error('File too large. Max 10MB.');
-        }
+            if (!allowedMimeTypes.includes(mimetype)) {
+               throw new Error(
+                  'Invalid file type. Only MP3 and WAV files are allowed.'
+               );
+            }
 
-        const existing = await getTrackById(id);
-        if (!existing) {
-          throw new Error('Track not found');
-        }
+            // Read file stream
+            const stream = createReadStream();
+            const chunks: Buffer[] = [];
 
-        const fileName = await saveAudioFile(id, filename, buffer);
-        const updatedTrack = await dbUpdateTrack(id, { audioFile: fileName });
-        if (!updatedTrack) {
-          throw new Error('Failed to save audio file');
-        }
-        return updatedTrack;
-      } catch (error) {
-        console.error('Error in uploadTrackFile resolver:', error);
-        throw error;
-      }
-    },
+            for await (const chunk of stream) {
+               chunks.push(chunk);
+            }
 
-    deleteTrackFile: async (_parent: unknown, { id }: { id: string }) => {
-      try {
-        const existing = await getTrackById(id);
-        if (!existing) {
-          throw new Error('Track not found');
-        }
-        if (!existing.audioFile) {
-          throw new Error('No audio file to delete');
-        }
-        const success = await deleteAudioFile(id);
-        if (!success) {
-          throw new Error('Failed to delete audio file');
-        }
-        return await getTrackById(id);
-      } catch (error) {
-        console.error('Error in deleteTrackFile resolver:', error);
-        throw new Error('Failed to delete track file');
-      }
-    },
+            const buffer = Buffer.concat(chunks);
+            const maxSize = 10 * 1024 * 1024; // 10MB
+
+            if (buffer.length > maxSize) {
+               throw new Error('File is too large. Maximum size is 10MB.');
+            }
+
+            // Check if track exists
+            const existingTrack = await getTrackById(id);
+            if (!existingTrack) {
+               throw new Error('Track not found');
+            }
+
+            // Save the audio file
+            const fileName = await saveAudioFile(id, filename, buffer);
+
+            // Update track with audio file reference
+            const updatedTrack = await updateTrack(id, { audioFile: fileName });
+
+            if (!updatedTrack) {
+               throw new Error('Failed to update track with audio file');
+            }
+
+            return updatedTrack;
+         } catch (error) {
+            console.error('Error uploading file:', error);
+            throw error;
+         }
+      },
+      deleteTrackFile: async (_parent: any, args: any) => {
+         const { id } = args;
+         const existingTrack = await getTrackById(id);
+         if (!existingTrack) {
+            throw new Error('Track not found');
+         }
+         if (!existingTrack.audioFile) {
+            throw new Error('Track has no audio file');
+         }
+         const success = await deleteAudioFile(id);
+         if (!success) {
+            throw new Error('Failed to delete audio file');
+         }
+         const updatedTrack = await getTrackById(id);
+         return updatedTrack;
+      },
   },
-};
+}; 
