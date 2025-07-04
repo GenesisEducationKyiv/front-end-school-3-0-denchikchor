@@ -16,7 +16,7 @@ jobs:
 
             # 2. Cache npm and node_modules directories
             - name: Cache node modules
-              uses: actions/cache@v3
+              uses: actions/cache@v4
               with:
                   path: |
                       ~/.npm
@@ -27,7 +27,7 @@ jobs:
 
             # 3. Set up Node.js environment
             - name: Setup Node.js
-              uses: actions/setup-node@v3
+              uses: actions/setup-node@v4
               with:
                   node-version: 16
                   cache: 'npm'
@@ -54,7 +54,7 @@ jobs:
 
             # 9. Upload the build output as an artifact
             - name: Upload build artifact
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                   name: frontend-build
                   path: dist/
@@ -62,7 +62,7 @@ jobs:
             # 10. Upload logs and test results for inspection
             - name: Upload logs and test results
               if: always()
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                   name: ci-logs
                   path: |
