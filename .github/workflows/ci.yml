@@ -1,0 +1,71 @@
+name: CI
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+
+jobs:
+    build-and-test:
+        runs-on: ubuntu-latest
+        steps:
+            # 1. Check out the repository
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            # 2. Cache npm and node_modules directories
+            - name: Cache node modules
+              uses: actions/cache@v3
+              with:
+                  path: |
+                      ~/.npm
+                      node_modules
+                  key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json','**/yarn.lock') }}
+                  restore-keys: |
+                      ${{ runner.os }}-node-
+
+            # 3. Set up Node.js environment
+            - name: Setup Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 16
+                  cache: 'npm'
+
+            # 4. Install project dependencies
+            - name: Install dependencies
+              run: npm ci
+
+            # 5. Run ESLint to lint the code
+            - name: Lint code
+              run: npm run lint
+
+            # 6. Perform TypeScript type checking
+            - name: Type-check
+              run: npm run type-check
+
+            # 7. Build the frontend application
+            - name: Build frontend
+              run: npm run build
+
+            # 8. Execute unit tests
+            - name: Run tests
+              run: npm test
+
+            # 9. Upload the build output as an artifact
+            - name: Upload build artifact
+              uses: actions/upload-artifact@v3
+              with:
+                  name: frontend-build
+                  path: dist/
+
+            # 10. Upload logs and test results for inspection
+            - name: Upload logs and test results
+              if: always()
+              uses: actions/upload-artifact@v3
+              with:
+                  name: ci-logs
+                  path: |
+                      eslint-report.html
+                      ts-report.txt
+                      test-results/
