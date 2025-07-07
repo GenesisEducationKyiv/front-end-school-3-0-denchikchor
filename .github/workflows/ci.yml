@@ -48,6 +48,13 @@ jobs:
             - name: Build frontend
               run: npm run build
 
+            - name: Build Docker image
+              run: |
+                  docker build \
+                    -t ${{ github.repository }}:${{ github.sha }} \
+                    -f Dockerfile \
+                    .
+
             # 8. Execute unit tests
             - name: Run tests
               run: npm test
