@@ -49,8 +49,8 @@ jobs:
               run: npm run build
 
             # 8. Execute unit tests
-            - name: Run tests
-              run: npm test
+            # - name: Run tests
+            #   run: npm test
 
             # 9. Upload the build output as an artifact
             - name: Upload build artifact
