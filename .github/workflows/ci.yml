@@ -42,7 +42,7 @@ jobs:
 
             # 6. Perform TypeScript type checking
             - name: Type-check
-              run: npm run type-check
+              run: npx tsc --noEmit
 
             # 7. Build the frontend application
             - name: Build frontend
