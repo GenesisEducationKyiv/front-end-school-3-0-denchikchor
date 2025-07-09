@@ -14,13 +14,13 @@ const TrackInfo: React.FC<Props> = ({ title, artist, album, genres, id }) => (
     <div className={styles.title} data-testid={`track-item-${id}-title`}  aria-label="{title}">
       {title}
     </div>
-    <div className={styles.artist} data-testid={`track-item-${id}-artist`} aria-label="{artist}">
+    <div className={styles.artist} data-testid={`track-itsem-${id}-artist`} aria-label="{artist}">
       {artist}
     </div>
-    <p className={styles.album}>
-  <span className="sr-only">Album: </span>
-  {album}
-</p>
+    <div className={styles.album}>
+      <span className={styles.sronly}>Album: </span>
+      {album}
+    </div>
     <div className={styles.genres} aria-label={`Genres: ${genres.join(", ")}`}>
       {genres.map((g) => (
         <span key={g} className={styles.genre}>

@@ -11,6 +11,10 @@
   transition: background 0.2s ease;
 }
 
+.sronly {
+  display: none;
+}
+
 .trackItem:hover {
   background-color: #2a2a2a;
 }
@@ -140,14 +144,4 @@
   }
 }
 
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  clip: rect(0,0,0,0);
-  border: 0;
-  white-space: nowrap;
-}
+
