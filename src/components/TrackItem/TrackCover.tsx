@@ -10,7 +10,9 @@ interface Props {
 const TrackCover: React.FC<Props> = ({ src, alt }) => (
   <img
     src={src || coverImage}
-    alt={alt}
+    alt={alt || "Track cover"}
+    role="img"
+    aria-label={alt ? undefined : "Default track cover"}
     onError={(e) => ((e.target as HTMLImageElement).src = coverImage)}
     className={styles.cover}
   />

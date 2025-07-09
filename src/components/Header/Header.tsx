@@ -29,9 +29,10 @@ const Header: React.FC<Props> = ({ onCreate, searchValue, onSearchChange }) => {
     <header
       className={`${styles.header} ${hidden ? styles.hidden : ""}`}
       data-testid="tracks-header"
+      aria-label="Tracks page header"
     >
       <div className={styles.left}>
-        <Logo className={styles.logo} />
+        <Logo className={styles.logo} aria-label="Music App logo" role="img"/>
       </div>
 
       <div className={styles.center}>
@@ -45,6 +46,7 @@ const Header: React.FC<Props> = ({ onCreate, searchValue, onSearchChange }) => {
       <div className={styles.right}>
         <Button
           onClick={onCreate}
+          type="button"
           data-testid="create-track-button"
           variant="primary"
         >

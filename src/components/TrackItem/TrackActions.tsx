@@ -17,9 +17,9 @@ const TrackActions: React.FC<Props> = ({
   onCheckboxChange,
   trackId,
 }) => (
-  <div className={styles.mainActions}>
-    <button onClick={onEdit} data-testid={`edit-track-${trackId}`}>
-      <Dots className={styles.dots} />
+  <div className={styles.mainActions} aria-label="Track actions">
+    <button onClick={onEdit} data-testid={`edit-track-${trackId}`} aria-label="Edit track">
+      <Dots aria-hidden="true" className={styles.dots} />
     </button>
     {showCheckbox && (
       <div className={styles.checkboxWrapper}>
@@ -28,6 +28,7 @@ const TrackActions: React.FC<Props> = ({
           checked={checked}
           onChange={onCheckboxChange}
           className={styles.checkbox}
+          aria-label={checked === true ? "Deselect track" : "Select track"}
         />
       </div>
     )}

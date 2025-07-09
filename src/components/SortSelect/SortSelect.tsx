@@ -15,13 +15,14 @@ const SortSelect: React.FC<Props> = ({
   onToggleDirection,
 }) => {
   return (
-    <div className={styles.sortWrapper}>
+    <div className={styles.sortWrapper} role="region" aria-label="Sort tracks">
       <div className={styles.customSelectWrapper}>
         <select
           value={value}
           onChange={(e) => onChange(e.target.value as Props["value"])}
           className={styles.select}
           data-testid="sort-select"
+          aria-label="Select property to sort by"
         >
           <option value="">Sorting</option>
           <option value="title">Name</option>
@@ -31,6 +32,7 @@ const SortSelect: React.FC<Props> = ({
           className={styles.arrow}
           viewBox="0 0 12 8"
           xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
         >
           <polyline
             points="1,1 6,6 11,1"
@@ -39,7 +41,14 @@ const SortSelect: React.FC<Props> = ({
           />
         </svg>
       </div>
-      <button onClick={onToggleDirection} className={styles.toggleButton}>
+      <button 
+        onClick={onToggleDirection} 
+        className={styles.toggleButton}
+        aria-label={
+        direction === "asc"
+          ? "Change to descending order"
+          : "Change to ascending order"
+      }>
         {direction === "asc" ? "↑" : "↓"}
       </button>
     </div>

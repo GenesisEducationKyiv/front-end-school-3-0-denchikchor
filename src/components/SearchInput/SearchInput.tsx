@@ -28,6 +28,7 @@ const SearchInput: React.FC<Props> = ({ value, onChange }) => {
         ref={inputRef}
         type="text"
         placeholder="Search by title, artist, or album"
+        aria-label="Search by title, artist, or album"
         value={value}
         onChange={(e) => {
           onChange(e.target.value);
