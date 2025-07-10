@@ -1,24 +1,25 @@
 import React from "react";
 import Pagination from "../Pagination/Pagination";
 import styles from "./TrackList.module.css";
+import { useTrackQueryParams } from "../../hooks/useTrackQueryParams";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store";
 
-interface Props {
-  currentPage: number;
-  totalPages: number;
-  onPageChange: (page: number) => void;
-}
+const TrackListPagination: React.FC = () => {
+  const { query: params, setParams } = useTrackQueryParams();
+  const currentPage = params.page ?? 1;
+  const totalPages = useSelector((state: RootState) => state.tracks.totalPages);
 
-const TrackListPagination: React.FC<Props> = ({
-  currentPage,
-  totalPages,
-  onPageChange,
-}) => {
+  const handlePageChange = (page: number) => {
+    setParams({ page });
+  };
+
   return (
     <div className={styles.paginationWrapper}>
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
-        onPageChange={onPageChange}
+        onPageChange={handlePageChange}
       />
     </div>
   );
