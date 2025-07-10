@@ -1,15 +1,16 @@
 import React from "react";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+
 import { useAppDispatch } from "../../hooks/redux-hook";
-import { createTrack } from "../../features/tracks/trackSlice";
-import { selectAllTracks } from "../../features/tracks/trackSlice";
-import { selectCreateModalOpen, closeCreateModal } from "../../features/ui/modalSlice";
 import { useTrackQueryParams } from "../../hooks/useTrackQueryParams";
+
+import { createTrack } from "../../features/tracks/trackSlice";
+import { selectCreateModalOpen, closeCreateModal } from "../../features/ui/modalSlice";
 import TrackForm from "../TrackForm/TrackForm";
 import ToastMessage from "../UI/ToastMessage/ToastMessage";
-import { toast } from "react-toastify";
-import { TrackFormSchema, TrackFormSchemaType } from "../../schemas/track";
 import ModalWrapper from "../UI/ModalWrapper/ModalWrapper";
-import { useSelector } from "react-redux";
+import { TrackFormSchema, TrackFormSchemaType } from "../../schemas/track";
 import { RootState } from "../../store";
 
 const TrackCreateModal: React.FC = () => {

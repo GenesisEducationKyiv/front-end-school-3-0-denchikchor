@@ -1,15 +1,18 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+
 import { useAppDispatch } from "../../hooks/redux-hook";
+
 import { selectEditTrackId, closeEditModal } from "../../features/ui/modalSlice";
 import { selectTrackById, editTrack, deleteTrack } from "../../features/tracks/trackSlice";
 import TrackForm from "../TrackForm/TrackForm";
 import ModalWrapper from "../UI/ModalWrapper/ModalWrapper";
 import ConfirmDialog from "../UI/ConfirmDialog/ConfirmDialog";
 import ToastMessage from "../UI/ToastMessage/ToastMessage";
-import { toast } from "react-toastify";
 import { TrackFormSchema, TrackFormSchemaType } from "../../schemas/track";
-import { useSelector } from "react-redux";
 import type { RootState } from "../../store";
+
 import styles from "./TrackEditModal.module.css";
 
 

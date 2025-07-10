@@ -26,6 +26,11 @@ const TrackBulkActions: React.FC = () => {
 
   const [showConfirm, setShowConfirm] = useState(false);
 
+  const onSelectAllClick = () => {
+    const ids = allTracks.map(t => t.id);
+    handleSelectAll(ids);
+  };
+
   const handleConfirmDelete = async () => {
     try {
       await handleBulkDelete(selectedTracks, params);
@@ -58,7 +63,7 @@ const TrackBulkActions: React.FC = () => {
             Selected: {selectedTracks.length} / {totalCount}
           </span>
           <button
-            onClick={() => handleSelectAll(allTracks.map((t) => t.id))}
+            onClick={onSelectAllClick}
             className={styles.button}
             data-testid="select-all"
           >

@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { Track, TracksQueryParams, TracksResponse } from "./types";
-import type { AppDispatch } from "../../store";
+import type { AppDispatch, RootState } from "../../store";
 import type { CreateTrackPayload, EditTrackPayload } from "../../api/tracks";
 import {
   getTracks as apiGetTracks,
@@ -11,7 +11,6 @@ import {
   removeTrackFile as apiRemoveTrackFile,
 } from "../../api/tracks";
 import type { ApiError } from "../../api/apiErrors";
-import type { RootState } from "../../store";
 
 
 /**
