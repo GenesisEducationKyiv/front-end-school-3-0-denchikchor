@@ -3,27 +3,11 @@ import styles from "./Header.module.css";
 import Button from "../UI/Button/Button";
 import SearchInput from "../SearchInput/SearchInput";
 import Logo from "../../assets/logo.svg?react";
+import { useAppDispatch } from "../../hooks/redux-hook";
+import { openCreateModal } from "../../features/ui/modalSlice";
 
-interface Props {
-  onCreate: () => void;
-  searchValue: string;
-  onSearchChange: (value: string) => void;
-}
-
-const Header: React.FC<Props> = ({ onCreate, searchValue, onSearchChange }) => {
-  const [hidden, setHidden] = useState(false);
-  const [lastScrollY, setLastScrollY] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentY = window.scrollY;
-      setHidden(currentY > lastScrollY && currentY > 80);
-      setLastScrollY(currentY);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
+const Header: React.FC = () => {
+  const dispatch = useAppDispatch();
 
   return (
     <header
@@ -36,11 +20,7 @@ const Header: React.FC<Props> = ({ onCreate, searchValue, onSearchChange }) => {
       </div>
 
       <div className={styles.center}>
-        <SearchInput
-          data-testid="search-input"
-          value={searchValue}
-          onChange={onSearchChange}
-        />
+        <SearchInput />
       </div>
 
       <div className={styles.right}>

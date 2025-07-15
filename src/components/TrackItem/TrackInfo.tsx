@@ -1,15 +1,17 @@
 import React from "react";
 import styles from "./TrackItem.module.css";
+import { useSelector } from "react-redux";
+import { selectTrackById } from "../../features/tracks/trackSlice";
+import type { RootState } from "../../store";
 
-interface Props {
-  title: string;
-  artist: string;
-  album: string;
-  genres: string[];
-  id: string;
-}
+interface Props { id: string; }
 
-const TrackInfo: React.FC<Props> = ({ title, artist, album, genres, id }) => (
+
+const TrackInfo: React.FC<Props> = ({ id }) => {
+const track = useSelector((state: RootState) => selectTrackById(state, id));
+  if (!track) return null;
+
+  return(
   <div className={styles.info}>
     <div className={styles.title} data-testid={`track-item-${id}-title`}  aria-label={title}>
       {title}
@@ -30,5 +32,6 @@ const TrackInfo: React.FC<Props> = ({ title, artist, album, genres, id }) => (
     </div>
   </div>
 );
+};
 
 export default TrackInfo;

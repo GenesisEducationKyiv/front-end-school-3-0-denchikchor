@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { Track, TracksQueryParams, TracksResponse } from "./types";
-import type { AppDispatch } from "../../store";
+import type { AppDispatch, RootState } from "../../store";
 import type { CreateTrackPayload, EditTrackPayload } from "../../api/tracks";
 import {
   getTracks as apiGetTracks,
@@ -12,6 +12,7 @@ import {
 } from "../../api/tracks";
 import type { ApiError } from "../../api/apiErrors";
 import type { RootState } from "../../store";
+
 
 
 /**
@@ -94,15 +95,18 @@ export const deleteTrack = createAsyncThunk<
  */
 export const uploadTrackFile = createAsyncThunk<
   Track,
-  { id: string; file: FormData },
+  { id: string; file: File },
   { rejectValue: ApiError }
->("tracks/uploadTrackFile", async ({ id, file }, { rejectWithValue }) => {
-  const result = await apiUploadTrackFile(id, file);
-  if (result.isErr()) {
-    return rejectWithValue(result.error);
+>(
+  "tracks/uploadTrackFile",
+  async ({ id, file }, { rejectWithValue }) => {
+    const result = await apiUploadTrackFile(id, file);
+    if (result.isErr()) {
+      return rejectWithValue(result.error);
+    }
+    return result.value;
   }
-  return result.value;
-});
+);
 
 /**
  * Async thunk to remove the audio file from a specific track.
@@ -255,7 +259,6 @@ const tracksSlice = createSlice({
 
 export default tracksSlice.reducer;
 export const selectAllTracks = (state: RootState) => state.tracks.items;
-
 
 export const selectTrackById = (state: RootState, id: string) =>
   state.tracks.items.find((track) => track.id === id);

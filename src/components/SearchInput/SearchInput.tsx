@@ -1,26 +1,35 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./SearchInput.module.css";
+import { useTrackQueryParams } from "../../hooks/useTrackQueryParams";
+import { useDebounce } from "../../hooks/useDebounce";
 
-interface Props {
-  value: string;
-  onChange: (value: string) => void;
-}
+const SearchInput: React.FC = () => {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const { query: params, setParams } = useTrackQueryParams();
 
-const SearchInput: React.FC<Props> = ({ value, onChange }) => {
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [local, setLocal] = useState(params.search ?? "");
+  const debouncedLocal = useDebounce(local, 500);
+  const isFirst = useRef(true);
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    if (isFirst.current) {
+      isFirst.current = false;
+      return;
+    }
+    setParams({ search: debouncedLocal || undefined, page: 1 });
+  }, [debouncedLocal, setParams]);
+
+  useEffect(() => {
+    const el = inputRef.current;
+    const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        onChange("");
-        inputRef.current?.blur();
+        setLocal("");
+        el?.blur();
       }
     };
-
-    const el = inputRef.current;
-    el?.addEventListener("keydown", handleKeyDown);
-    return () => el?.removeEventListener("keydown", handleKeyDown);
-  }, [onChange]);
+    el?.addEventListener("keydown", onKey);
+    return () => el?.removeEventListener("keydown", onKey);
+  }, []);
 
   return (
     <div className={styles.wrapper}>
@@ -36,10 +45,10 @@ const SearchInput: React.FC<Props> = ({ value, onChange }) => {
         className={styles.input}
         data-testid="search-input"
       />
-      {value && (
+      {local && (
         <button
           type="button"
-          onClick={() => onChange("")}
+          onClick={() => setLocal("")}
           className={styles.clearButton}
           aria-label="Clear search"
         >

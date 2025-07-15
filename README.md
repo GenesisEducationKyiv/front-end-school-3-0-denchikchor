@@ -1,94 +1,78 @@
-🎵 Music App
-A modern, responsive web application for managing and playing your music collection. Built with React, TypeScript, Vite, and Vitest, it offers features like track uploading, filtering, sorting, playback with waveform visualization, bulk actions, and comprehensive test coverage.
+## 🎵 Music App
 
-🚀 Features
-Track Management
-Create, edit, and delete tracks with metadata (title, artist, album, genres, cover image).
+A modern, responsive web application for managing and playing your music collection. Built with React, TypeScript, Vite, and Vitest.
 
-File Uploads
-Upload or remove audio files (MP3/WAV) per track, with size/type validation.
+---
 
-Custom Audio Player
-Play/pause, seek, and visualize waveform in real time.
+## 🚀 Features
 
-Filtering & Sorting
-Filter by artist or genre and sort by title, artist, or genre.
+- **Track Management**: Create, edit, delete tracks with metadata.
+- **File Uploads**: Upload/remove MP3/WAV with validation.
+- **Audio Player**: Play, pause, seek, waveform visualization.
+- **Filtering & Sorting**: By artist, genre, title.
+- **Pagination**: Navigate pages; reset to first page on search/filter change.
+- **Bulk Actions**: Select multiple tracks for deletion.
+- **Responsive & Accessible**: Works on mobile/desktop; ARIA, keyboard support.
+- **Testing**: Vitest + Testing Library for unit/integration tests.
 
-Pagination
-Browse tracks in pages (configurable page size), with “go to first page” logic on search/filter changes.
+---
 
-Bulk Actions
-Toggle bulk-select mode to choose multiple tracks and delete them in one click.
+## 🔧 Setup & Optimization
 
-Optimistic Updates
-UI updates immediately when deleting tracks, before server confirmation.
+- **Environment Variables**
+  Create a `.env` in project root (ignored by Git). Prefix all keys with `VITE_`, e.g.:
 
-Responsive Design
-Adapts to desktop and mobile layouts.
+    ```dotenv
+    VITE_API_URL=https://api.example.com/graphql
+    ```
 
-Keyboard & Accessibility
-Close modals with ESC or click outside; form fields support autofill; ARIA attributes on disabled controls.
+- **Bundle Analysis**
+  Install `rollup-plugin-visualizer` and add to `vite.config.ts`:
 
-Testing
-Unit and integration tests with Vitest, Testing Library, and DOM matchers.
+    ```ts
+    import { visualizer } from 'rollup-plugin-visualizer';
+    // in plugins: visualizer({ filename: './dist/stats.html', open: true, gzipSize: true });
+    ```
 
-🏁 Getting Started
-Prerequisites
-Node.js ≥14
+- **Code Splitting & Lazy Loading**
+  Use `React.lazy` + `Suspense` for heavy components:
 
-npm ≥6
+    ```tsx
+    const Modal = React.lazy(() => import('./Modal'));
+    <Suspense fallback={<Preloader />}>
+        <Modal />
+    </Suspense>;
+    ```
 
-Installation
-Clone the repo
-git clone https://github.com/denchikchor/music-app.git
-cd music-app
+- **Source Maps**
+  Enable in `vite.config.ts`:
 
-Install dependencies
-npm install
+    ```ts
+    build: {
+        sourcemap: true;
+    }
+    ```
 
-Start development server
-npm start
+---
 
-Visit http://localhost:3000
+## 🧩 Scripts
 
-Build & Deployment
-Build for production
-npm run build
-Output is in dist/.
+```bash
+npm start    # dev server
+npm run build  # production bundle
+npm run preview  # preview build
+npm run test   # run tests
+npm run format # format code
+```
 
-Preview production build
-npm run preview
+---
 
-🧩 Available Scripts
-npm start — start Vite dev server
+## 🤝 Contributing
 
-npm run build — bundle for production
+1. Fork and clone the repo
+2. Create a feature branch
+3. Install dependencies and develop
+4. Run tests and ensure they pass
+5. Submit a pull request
 
-npm run preview — locally preview production build
-
-npm run test — run all tests in watch mode
-
-npm run format — run Prettier on all source files
-
-🧪 Testing
-This project uses Vitest + React Testing Library:
-
-Components are tested in isolation with mocked dependencies (e.g. CustomAudioPlayer, TrackUpload).
-
-Data-testids ensure selectors for DOM queries.
-
-To run tests:
-
-npm test
-Write tests next to components (ComponentName.test.tsx) or in a centralized tests/ folder for utilities.
-
-🤝 Contributing
-Fork & clone
-
-Create feature branch: git checkout -b feature/my-feature
-
-Install & develop
-
-Run tests & ensure all pass
-
-Thank you for using Music App! Enjoy managing and playing your tracks with ease.
+Enjoy using Music App!

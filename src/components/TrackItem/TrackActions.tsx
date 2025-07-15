@@ -1,12 +1,16 @@
 import React from "react";
 import styles from "./TrackItem.module.css";
 import Dots from "../../assets/dots.svg?react";
+import { useAppDispatch } from "../../hooks/redux-hook";
+import { useSelector } from "react-redux";
+import {
+  selectSelectionMode,
+  selectSelectedIds,
+  toggleTrackSelection,
+} from "../../features/bulk-selection/selectionSlice";
+import { openEditModal } from "../../features/ui/modalSlice";
 
 interface Props {
-  onEdit: () => void;
-  showCheckbox?: boolean;
-  checked?: boolean;
-  onCheckboxChange?: () => void;
   trackId: string;
 }
 
