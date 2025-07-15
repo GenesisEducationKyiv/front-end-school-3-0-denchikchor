@@ -57,7 +57,7 @@ const TrackForm: React.FC<Props> = ({
           placeholder="Track name"
         />
         {errors.title && (
-          <div className={styles.error} data-testid="error-title">
+          <div className={styles.error} data-testid="error-title" role="alert">
             {errors.title.message}
           </div>
         )}

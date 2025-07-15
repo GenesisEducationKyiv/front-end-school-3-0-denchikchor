@@ -197,6 +197,7 @@ const CustomAudioPlayer: React.FC<Props> = ({
             src={src}
             crossOrigin="anonymous"
             className="hidden"
+            aria-hidden="true"
             onError={() => {
               setHasError(true);
             }}
