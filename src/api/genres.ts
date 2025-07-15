@@ -5,6 +5,7 @@ import { ApiError } from "./apiErrors";
 import { mapAxiosError } from "./apiHelpers";
 
 export const getGenres = async (): Promise<Result<string[], ApiError>> => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const result: Result<AxiosResponse<string[]>, ApiError> = await fromPromise(
     axios.get<string[]>(`${API_BASE}/genres`),
     mapAxiosError,
