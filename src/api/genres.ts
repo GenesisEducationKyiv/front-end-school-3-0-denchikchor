@@ -1,15 +1,10 @@
-import axios, { AxiosResponse } from "axios";
-import { API_BASE } from "./config";
-import { fromPromise, Result } from "neverthrow";
-import { ApiError } from "./apiErrors";
-import { mapAxiosError } from "./apiHelpers";
+import { client } from '../apollo/client';
+import { GET_GENRES } from '../graphql/queries';
+import { fromPromise, Result } from 'neverthrow';
+import type { ApiError } from './apiErrors';
 
 export const getGenres = async (): Promise<Result<string[], ApiError>> => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const result: Result<AxiosResponse<string[]>, ApiError> = await fromPromise(
-    axios.get<string[]>(`${API_BASE}/genres`),
-    mapAxiosError,
-  );
-
-  return result.map((res) => res.data);
+  const p = client.query<{ genres: string[] }>({ query: GET_GENRES });
+  const result = await fromPromise(p, (err) => ({ message: err.message }));
+  return result.map((r) => r.data.genres);
 };

@@ -1,40 +1,121 @@
-import axios, { AxiosError, AxiosResponse } from "axios";
-import { API_BASE } from "./config";
-import {
+import { client } from "../apollo/client";
+import { gql } from "@apollo/client";
+import { fromPromise, ok, err, type Result } from "neverthrow";
+import type { ApiError } from "./apiErrors";
+import type {
   Track,
   TracksQueryParams,
   TracksResponse,
-  TracksResponseRaw,
 } from "../features/tracks/types";
-import { fromPromise, Result } from "neverthrow";
-import type { ApiError } from "./apiErrors";
-import { mapAxiosError } from "./apiHelpers";
 
-/**
- * Fetches tracks from the backend with support for filtering, sorting, and pagination.
- * Cleans out empty or undefined params before making the request.
- * @param params - query parameters to apply (page, limit, search, sort, etc.)
- * @returns a promise resolving to a flattened TracksResponse
- */
+// --- Queries & Mutations ---
+const GET_TRACKS = gql`
+  query GetTracks(
+    $page: Int, $limit: Int, $sort: String, $order: String,
+    $search: String, $genre: String, $artist: String
+  ) {
+    tracks(
+      page: $page, limit: $limit,
+      sort: $sort, order: $order,
+      search: $search, genre: $genre, artist: $artist
+    ) {
+      data {
+        id title artist album genres slug coverImage audioFile createdAt updatedAt
+      }
+      meta {
+        total page limit totalPages
+      }
+    }
+  }
+`;
+
+const CREATE_TRACK = gql`
+  mutation CreateTrack($input: CreateTrackInput!) {
+    createTrack(input: $input) {
+      id title artist album genres slug coverImage audioFile createdAt updatedAt
+    }
+  }
+`;
+
+const UPDATE_TRACK = gql`
+  mutation UpdateTrack($id: ID!, $input: UpdateTrackInput!) {
+    updateTrack(id: $id, input: $input) {
+      id title artist album genres slug coverImage audioFile createdAt updatedAt
+    }
+  }
+`;
+
+const DELETE_TRACK = gql`
+  mutation DeleteTrack($id: ID!) {
+    deleteTrack(id: $id)
+  }
+`;
+
+const UPLOAD_TRACK_FILE = gql`
+   mutation UploadTrackFile($id: ID!, $file: Upload!) {
+      uploadTrackFile(id: $id, file: $file) {
+         id
+         title
+         artist
+         album
+         genres
+         slug
+         coverImage
+         audioFile
+         createdAt
+         updatedAt
+      }
+   }
+`;
+
+const DELETE_TRACK_FILE = gql`
+  mutation DeleteTrackFile($id: ID!) {
+    deleteTrackFile(id: $id) {
+      id audioFile
+    }
+  }
+`;
+
+// --- Payload Interfaces ---
+export interface CreateTrackPayload {
+  title: string;
+  artist: string;
+  album: string;
+  genres: string[];
+  coverImage?: string;
+}
+
+export interface EditTrackPayload extends CreateTrackPayload {
+  id: string;
+}
+
+// --- Helper for safe error messages ---
+function getErrorMessage(e: unknown): string {
+  return e instanceof Error ? e.message : String(e);
+}
+
+// --- API Functions ---
 export const getTracks = async (
-  params: TracksQueryParams = {},
+  params: TracksQueryParams = {}
 ): Promise<Result<TracksResponse, ApiError>> => {
-  const cleanedParams = Object.fromEntries(
-    Object.entries(params).filter(([, v]) => v !== undefined && v !== ""),
+  const variables = Object.fromEntries(
+    Object.entries(params).filter(([, v]) => v != null && v !== "")
   );
 
-  const axiosResult: Result<
-    AxiosResponse<TracksResponseRaw>,
-    ApiError
-  > = await fromPromise(
-    axios.get<TracksResponseRaw>(`${API_BASE}/tracks`, {
-      params: cleanedParams,
-    }),
-    mapAxiosError,
-  );
+  const promise = client.query<{
+    tracks: { data: Track[]; meta: { total: number; page: number; limit: number; totalPages: number } };
+  }>({
+    query: GET_TRACKS,
+    variables,
+    fetchPolicy: "network-only",
+  });
 
-  return axiosResult.map((response) => {
-    const { data, meta } = response.data;
+  const result = await fromPromise(
+    promise,
+    (e: unknown) => ({ message: getErrorMessage(e) })
+  );
+  return result.map((res) => {
+    const { data, meta } = res.data.tracks;
     return {
       data,
       page: meta.page,
@@ -45,91 +126,84 @@ export const getTracks = async (
   });
 };
 
-/**
- * Payload for creating a new track.
- */
-export interface CreateTrackPayload {
-  title: string;
-  artist: string;
-  album: string;
-  genres: string[];
-  coverImage?: string; // Optional URL
-}
-
-/**
- * Payload for editing an existing track.
- * Extends CreateTrackPayload with an ID property.
- */
-export interface EditTrackPayload extends CreateTrackPayload {
-  id: string;
-}
-
-// Creates a new track on the server.
 export const createTrack = async (
-  payload: CreateTrackPayload,
-): Promise<Result<void, ApiError>> => {
-  const result = await fromPromise(
-    axios.post(`${API_BASE}/tracks`, payload),
-    mapAxiosError,
-  );
-
-  return result.map(() => void 0);
-};
-
-// Updates an existing track by ID.
-export const editTrack = async (
-  payload: EditTrackPayload,
+  payload: CreateTrackPayload
 ): Promise<Result<Track, ApiError>> => {
-  const result = await fromPromise(
-    axios.put<Track>(`${API_BASE}/tracks/${payload.id}`, payload),
-    mapAxiosError,
-  );
+  const promise = client.mutate<{ createTrack: Track }>({
+    mutation: CREATE_TRACK,
+    variables: { input: payload },
+  });
 
-  return result.map((r) => r.data);
+  const result = await fromPromise(
+    promise,
+    (e: unknown) => ({ message: getErrorMessage(e) })
+  );
+  return result.map((res) => res.data!.createTrack);
 };
 
-//Deletes a track by ID.
+export const editTrack = async (
+  payload: EditTrackPayload
+): Promise<Result<Track, ApiError>> => {
+  const { id, ...input } = payload;
+
+  const promise = client.mutate<{ updateTrack: Track }>({
+    mutation: UPDATE_TRACK,
+    variables: { id, input },
+  });
+
+  const result = await fromPromise(
+    promise,
+    (e: unknown) => ({ message: getErrorMessage(e) })
+  );
+  return result.map((res) => res.data!.updateTrack);
+};
+
 export const deleteTrack = async (
-  id: string,
+  id: string
 ): Promise<Result<void, ApiError>> => {
-  const result = await fromPromise(
-    axios.delete(`${API_BASE}/tracks/${id}`),
-    mapAxiosError,
-  );
+  const promise = client.mutate<{ deleteTrack: boolean }>({
+    mutation: DELETE_TRACK,
+    variables: { id },
+  });
 
-  return result.map(() => void 0);
+  const result = await fromPromise(
+    promise,
+    (e: unknown) => ({ message: getErrorMessage(e) })
+  );
+  return result.andThen((res) =>
+    res.data!.deleteTrack
+      ? ok(undefined)
+      : err({ message: "Delete failed" })
+  );
 };
 
-/**
- * Uploads an audio file for a specific track.
- * @param id - the track ID
- * @param file - FormData containing the audio file under a file key
- * @returns a promise resolving to the updated Track including file info
- */
 export const uploadTrackFile = async (
   id: string,
-  file: FormData,
+  file: File
 ): Promise<Result<Track, ApiError>> => {
-  const result = await fromPromise(
-    axios.post<Track>(`${API_BASE}/tracks/${id}/upload`, file),
-    mapAxiosError,
-  );
+  const promise = client.mutate<{ uploadTrackFile: Track }>({
+    mutation: UPLOAD_TRACK_FILE,
+    variables: { id, file },
+  });
 
-  return result.map((r) => r.data);
+  const result = await fromPromise(
+    promise,
+    (e: unknown) => ({ message: getErrorMessage(e) })
+  );
+  return result.map((res) => res.data!.uploadTrackFile);
 };
 
-/**
- * Removes the audio file from a specific track.
- * @param id - the track ID
- * @returns a promise that resolves when the file is deleted
- */
 export const removeTrackFile = async (
-  id: string,
-): Promise<Result<void, ApiError>> => {
-  const result = await fromPromise(
-    axios.delete(`${API_BASE}/tracks/${id}/file`),
-    mapAxiosError,
-  );
+  id: string
+): Promise<Result<Track, ApiError>> => {
+  const promise = client.mutate<{ deleteTrackFile: Track }>({
+    mutation: DELETE_TRACK_FILE,
+    variables: { id },
+  });
 
-  return result.map(() => void 0);
+  const result = await fromPromise(
+    promise,
+    (e: unknown) => ({ message: getErrorMessage(e) })
+  );
+  return result.map((res) => res.data!.deleteTrackFile);
 };

@@ -4,6 +4,7 @@
   "type": "module",
   "private": true,
   "dependencies": {
+    "@apollo/client": "^3.13.8",
     "@hookform/resolvers": "^5.0.1",
     "@mobily/ts-belt": "^3.13.1",
     "@radix-ui/react-dialog": "^1.1.10",
@@ -11,9 +12,11 @@
     "@testing-library/dom": "^10.4.0",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
+    "apollo-upload-client": "^18.0.1",
     "axios": "^1.8.4",
     "classnames": "^2.5.1",
     "clsx": "^2.1.1",
+    "graphql": "^16.11.0",
     "neverthrow": "^8.2.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -75,6 +78,7 @@
     "playwright": "^1.53.0",
     "prettier": "^3.5.3",
     "redux-mock-store": "^1.5.5",
+    "rollup-plugin-visualizer": "^6.0.3",
     "vite": "^6.3.3",
     "vite-plugin-svgr": "^4.3.0",
     "vitest": "^3.1.2"

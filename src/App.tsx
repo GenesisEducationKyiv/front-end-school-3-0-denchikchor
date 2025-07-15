@@ -1,57 +1,44 @@
-import React, { useState } from "react";
-
-import TrackCreateModal from "./components/TrackCreateModal/TrackCreateModal";
-import TrackList from "./components/TrackList/TrackList";
-import TrackEditModal from "./components/TrackEditModal/TrackEditModal";
-import { Track } from "./features/tracks/types";
+import { lazy, Suspense } from "react";
 import { ToastContainer } from "react-toastify";
-import Header from "./components/Header/Header";
-import { useAppDispatch } from "./hooks/redux-hook";
-import { deleteTrack } from "./features/tracks/trackSlice";
+import { useSelector } from "react-redux";
+import { Header, Preloader } from "./components";
+import {
+  selectCreateModalOpen,
+  selectEditTrackId,
+} from "./features/ui/modalSlice";
+import TrackList from "./components/TrackList/TrackList";
+
+const TrackCreateModal = lazy(() =>
+  import("./components/TrackCreateModal/TrackCreateModal")
+);
+const TrackEditModal = lazy(() =>
+  import("./components/TrackEditModal/TrackEditModal")
+);
 
 function App() {
-  const [isModalOpen, setModalOpen] = useState(false);
-  const [editingTrack, setEditingTrack] = useState<Track | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [forceGoToFirstPage, setForceGoToFirstPage] = useState(false);
-  const dispatch = useAppDispatch();
-
-  const handleDelete = (id: string) => {
-    void dispatch(deleteTrack(id));
-  };
+  const isCreateModalOpen = useSelector(selectCreateModalOpen);
+  const isEditModalOpen = useSelector(selectEditTrackId);
 
   return (
     <>
-      <Header
-        onCreate={() => setModalOpen(true)}
-        searchValue={searchQuery}
-        onSearchChange={(value) => {
-          setSearchQuery(value);
-          setForceGoToFirstPage(true);
-        }}
-      />
+      <Header />
+
       <main className="content">
-        <TrackList
-          onEditTrack={(track) => setEditingTrack(track)}
-          searchQuery={searchQuery}
-          forceGoToFirstPage={forceGoToFirstPage}
-          setForceGoToFirstPage={setForceGoToFirstPage}
-        />
+        <TrackList />
       </main>
 
-      {isModalOpen && (
-        <TrackCreateModal
-          onClose={() => setModalOpen(false)}
-          onCreated={() => setForceGoToFirstPage(true)}
-        />
+      {isCreateModalOpen && (
+        <Suspense fallback={<Preloader />}>
+          <TrackCreateModal />
+        </Suspense>
       )}
-      {editingTrack && (
-        <TrackEditModal
-          onDelete={handleDelete}
-          track={editingTrack}
-          onClose={() => setEditingTrack(null)}
-        />
+
+      {isEditModalOpen && (
+        <Suspense fallback={<Preloader />}>
+          <TrackEditModal />
+        </Suspense>
       )}
+
       <ToastContainer position="top-right" autoClose={3000} />
     </>
   );
