@@ -37,8 +37,11 @@ const SearchInput: React.FC = () => {
         ref={inputRef}
         type="text"
         placeholder="Search by title, artist, or album"
-        value={local}
-        onChange={(e) => setLocal(e.target.value)}
+        aria-label="Search by title, artist, or album"
+        value={value}
+        onChange={(e) => {
+          onChange(e.target.value);
+        }}
         className={styles.input}
         data-testid="search-input"
       />

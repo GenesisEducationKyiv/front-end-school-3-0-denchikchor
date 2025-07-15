@@ -33,6 +33,7 @@ const GenreSelector: React.FC<Props> = ({ selected, onChange }) => {
             {genre}
             <button
               className={styles.removeButton}
+              type="button"
               onClick={() => onChange(selected.filter((g) => g !== genre))}
               aria-label={`Remove genre ${genre}`}
             >
@@ -53,6 +54,7 @@ const GenreSelector: React.FC<Props> = ({ selected, onChange }) => {
               }
             }}
             value=""
+            aria-label="Add genre"
           >
             <option value="">+ Add genre</option>
             {availableGenres.map((genre) => (
@@ -65,6 +67,7 @@ const GenreSelector: React.FC<Props> = ({ selected, onChange }) => {
             className={styles.arrow}
             viewBox="0 0 12 8"
             xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
           >
             <polyline
               points="1,1 6,6 11,1"

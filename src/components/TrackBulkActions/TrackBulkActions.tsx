@@ -48,11 +48,17 @@ const TrackBulkActions: React.FC = () => {
   };
 
   return (
-    <div className={styles.wrapper}>
+    <div className={styles.wrapper} role="region" aria-label="Bulk selection controls">
       <button
         onClick={toggleSelectionMode}
         className={styles.button}
         data-testid="toggle-selection-mode"
+        aria-pressed={selectionMode}
+        aria-label={
+          selectionMode
+            ? "Cancel bulk selection mode"
+            : "Enter bulk selection mode"
+        }
       >
         {selectionMode ? "Cancel" : "Bulk select"}
       </button>
@@ -66,6 +72,7 @@ const TrackBulkActions: React.FC = () => {
             onClick={onSelectAllClick}
             className={styles.button}
             data-testid="select-all"
+            aria-label="Select all tracks"
           >
             Select all
           </button>
@@ -75,6 +82,7 @@ const TrackBulkActions: React.FC = () => {
             aria-disabled={selectedTracks.length === 0}
             data-testid="delete-selected"
             className={styles.dangerButton}
+            aria-label="Delete selected tracks"
           >
             Delete selected
           </button>
