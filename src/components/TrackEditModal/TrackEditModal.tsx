@@ -62,7 +62,7 @@ const TrackEditModal: React.FC = () => {
   };
 
   return (
-    <ModalWrapper onClose={onClose} aria-label="Edit track" aria-modal="true">
+    <ModalWrapper onClose={() => dispatch(closeEditModal())} aria-label="Edit track" aria-modal="true">
       <div className={styles.header}>
         <h2>Edit track</h2>
         <button

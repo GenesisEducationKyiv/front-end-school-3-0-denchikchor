@@ -38,7 +38,7 @@ const SortSelect: React.FC = () => {
         </svg>
       </div>
       <button 
-        onClick={onToggleDirection} 
+        onClick={handleToggleDirection} 
         className={styles.toggleButton}
         aria-label={
         direction === "asc"

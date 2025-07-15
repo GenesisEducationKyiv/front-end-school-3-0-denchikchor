@@ -11,7 +11,7 @@ const Header: React.FC = () => {
 
   return (
     <header
-      className={`${styles.header} ${hidden ? styles.hidden : ""}`}
+      className={styles.header}
       data-testid="tracks-header"
       aria-label="Tracks page header"
     >
@@ -25,7 +25,7 @@ const Header: React.FC = () => {
 
       <div className={styles.right}>
         <Button
-          onClick={onCreate}
+          onClick={() => dispatch(openCreateModal())}
           type="button"
           data-testid="create-track-button"
           variant="primary"

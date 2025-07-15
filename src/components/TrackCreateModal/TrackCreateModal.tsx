@@ -55,7 +55,7 @@ const TrackCreateModal: React.FC = () => {
   };
 
   return (
-    <ModalWrapper onClose={onClose} aria-label="Create a new track" aria-modal="true">
+    <ModalWrapper onClose={() => dispatch(closeCreateModal())} aria-label="Create a new track" aria-modal="true">
       <h2 data-testid="tracks-header">Create a new track</h2>
       <TrackForm submitLabel="Create" onSubmit={handleSubmit} onCancel={() => dispatch(closeCreateModal())} />
     </ModalWrapper>
