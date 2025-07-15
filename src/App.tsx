@@ -1,8 +1,7 @@
 import { lazy, Suspense } from "react";
 import { ToastContainer } from "react-toastify";
 import { useSelector } from "react-redux";
-import Header from "./components/Header/Header";
-import Preloader from "./components/Preloader/Preloader";
+import { Header, Preloader } from "./components";
 import {
   selectCreateModalOpen,
   selectEditTrackId,
@@ -17,8 +16,8 @@ const TrackEditModal = lazy(() =>
 );
 
 function App() {
-  const isCreateOpen = useSelector(selectCreateModalOpen);
-  const isEditOpen = useSelector(selectEditTrackId);
+  const isCreateModalOpen = useSelector(selectCreateModalOpen);
+  const isEditModalOpen = useSelector(selectEditTrackId);
 
   return (
     <>
@@ -28,13 +27,13 @@ function App() {
         <TrackList />
       </main>
 
-      {isCreateOpen && (
+      {isCreateModalOpen && (
         <Suspense fallback={<Preloader />}>
           <TrackCreateModal />
         </Suspense>
       )}
 
-      {isEditOpen && (
+      {isEditModalOpen && (
         <Suspense fallback={<Preloader />}>
           <TrackEditModal />
         </Suspense>
