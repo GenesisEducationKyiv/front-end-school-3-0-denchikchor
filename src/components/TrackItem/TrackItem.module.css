@@ -11,6 +11,10 @@
   transition: background 0.2s ease;
 }
 
+.sronly {
+  display: none;
+}
+
 .trackItem:hover {
   background-color: #2a2a2a;
 }
@@ -139,3 +143,5 @@
     align-items: flex-start;
   }
 }
+
+

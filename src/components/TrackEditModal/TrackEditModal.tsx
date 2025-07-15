@@ -62,16 +62,18 @@ const TrackEditModal: React.FC = () => {
   };
 
   return (
-    <ModalWrapper onClose={() => dispatch(closeEditModal())}>
+    <ModalWrapper onClose={onClose} aria-label="Edit track" aria-modal="true">
       <div className={styles.header}>
         <h2>Edit track</h2>
         <button
-        onClick={() => setShowConfirm(true)}
-        data-testid={`delete-track-${track.id}`}
-        className={styles.deleteButton}
-      >
-        Delete track
-      </button>
+          type="button"
+          onClick={() => setShowConfirm(true)}
+          data-testid={`delete-track-${track.id}`}
+          className={styles.deleteButton}
+          aria-label="Delete track"
+        >
+          Delete track
+        </button>
       </div>
 
       {showConfirm && (

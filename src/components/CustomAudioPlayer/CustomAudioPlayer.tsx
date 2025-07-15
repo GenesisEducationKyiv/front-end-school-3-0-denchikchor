@@ -159,7 +159,7 @@ const CustomAudioPlayer: React.FC<Props> = ({
       ) : (
         <div className={styles.container}>
           <div className={styles.controls}>
-            <button onClick={onTogglePlay} className={styles.button}>
+            <button onClick={onTogglePlay} className={styles.button} aria-pressed={isActive} aria-label={isActive ? "Pause playback" : "Play playback"}>
               {isActive ? (
                 <PauseIcon className={styles.icon} />
               ) : (
@@ -176,6 +176,11 @@ const CustomAudioPlayer: React.FC<Props> = ({
                 if (audio) audio.currentTime = Number(e.target.value);
               }}
               className={styles.slider}
+              aria-label="Seek playback position"
+              aria-valuemin={0}
+              aria-valuemax={duration || 0}
+              aria-valuenow={currentTime}
+              aria-valuetext={`${formatTime(currentTime)} of ${formatTime(duration)}`}
             />
             <span className={styles.timer}>
               {formatTime(currentTime)} / {formatTime(duration)}
