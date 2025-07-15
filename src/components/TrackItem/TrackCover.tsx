@@ -15,6 +15,7 @@ const TrackCover: React.FC<Props> = ({ src, alt }) => (
     aria-label={alt ? undefined : "Default track cover"}
     onError={(e) => ((e.target as HTMLImageElement).src = coverImage)}
     className={styles.cover}
+    loading="lazy"
   />
 );
 

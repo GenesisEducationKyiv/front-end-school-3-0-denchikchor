@@ -11,10 +11,10 @@ interface Props {
 
 const TrackInfo: React.FC<Props> = ({ title, artist, album, genres, id }) => (
   <div className={styles.info}>
-    <div className={styles.title} data-testid={`track-item-${id}-title`}  aria-label="{title}">
+    <div className={styles.title} data-testid={`track-item-${id}-title`}  aria-label={title}>
       {title}
     </div>
-    <div className={styles.artist} data-testid={`track-itsem-${id}-artist`} aria-label="{artist}">
+    <div className={styles.artist} data-testid={`track-item-${id}-artist`} aria-label={artist}>
       {artist}
     </div>
     <div className={styles.album}>
