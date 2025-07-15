@@ -3,10 +3,7 @@ import { useSelector } from "react-redux";
 
 import styles from "./TrackUpload.module.css";
 import { RootState } from "../../store";
-import {
-  removeTrackFile,
-  uploadTrackFile,
-} from "../../features/tracks/trackSlice";
+import { removeTrackFile, uploadTrackFile } from "../../features/tracks/trackSlice";
 import Button from "../UI/Button/Button";
 import { toast } from "react-toastify";
 import { useAppDispatch } from "../../hooks/redux-hook";
@@ -24,16 +21,23 @@ const TrackUpload: React.FC<Props> = ({ trackId }) => {
   const [showConfirm, setShowConfirm] = useState(false);
 
   const track = useSelector((state: RootState) =>
-    state.tracks.items.find((t) => t.id === trackId),
+    state.tracks.items.find((t) => t.id === trackId)
   );
 
   if (!track) return null;
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const validTypes = ["audio/mpeg", "audio/wav", "audio/x-wav", "audio/mp3"];
+    const validTypes = [
+      "audio/mpeg",
+      "audio/wav",
+      "audio/x-wav",
+      "audio/mp3",
+    ];
     if (!validTypes.includes(file.type)) {
       alert("Invalid file type. Allowed: MP3, WAV.");
       return;
@@ -45,21 +49,16 @@ const TrackUpload: React.FC<Props> = ({ trackId }) => {
       return;
     }
 
-    const formData = new FormData();
-    formData.append("file", file);
-    console.log("Selected file:", e.target.files?.[0]);
-    console.log("Uploading file:", formData.get("file"));
-
     setUploading(true);
     try {
-      await dispatch(uploadTrackFile({ id: trackId, file: formData }));
+      await dispatch(uploadTrackFile({ id: trackId, file })).unwrap();
       toast.success(
-        <ToastMessage message="File successfully uploaded!" type="success" />,
+        <ToastMessage message="File successfully uploaded!" type="success" />
       );
     } catch (err) {
       console.error("Upload error:", err);
       toast.error(
-        <ToastMessage message="Error while uploading file" type="error" />,
+        <ToastMessage message="Error while uploading file" type="error" />
       );
     } finally {
       setUploading(false);
@@ -72,7 +71,7 @@ const TrackUpload: React.FC<Props> = ({ trackId }) => {
   const handleRemove = async () => {
     setUploading(true);
     try {
-      await dispatch(removeTrackFile(trackId));
+      await dispatch(removeTrackFile(trackId)).unwrap();
       toast.success("File deleted");
     } catch (err) {
       console.error("Error deleting file:", err);
@@ -116,11 +115,7 @@ const TrackUpload: React.FC<Props> = ({ trackId }) => {
         <ConfirmDialog
           message="Are you sure you want to delete this track?"
           onConfirm={async () => {
-            try {
-              await handleRemove();
-            } catch (err) {
-              console.error("Delete error in ConfirmDialog:", err);
-            }
+            await handleRemove();
             setShowConfirm(false);
           }}
           onCancel={() => setShowConfirm(false)}
