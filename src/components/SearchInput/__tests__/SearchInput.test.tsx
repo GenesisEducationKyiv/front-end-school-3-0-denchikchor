@@ -1,59 +1,63 @@
-import { render, screen, fireEvent, cleanup } from "../../../test-utils";
+import { render, screen, fireEvent, waitFor } from "../../../test-utils";
+import { MemoryRouter } from "react-router-dom";
 import SearchInput from "../SearchInput";
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
-describe("SearchInput (white-box)", () => {
-  let onChange: ReturnType<typeof vi.fn>;
-  let addSpy: ReturnType<typeof vi.spyOn>;
-  let removeSpy: ReturnType<typeof vi.spyOn>;
+const setParamsMock = jest.fn();
+const mockQuery = { search: "initial", page: 2 };
 
+jest.mock("../../../hooks/useTrackQueryParams", () => ({
+  __esModule: true,
+  useTrackQueryParams: () => ({
+    query: mockQuery,
+    setParams: setParamsMock,
+  }),
+}));
+jest.mock("../../../hooks/useDebounce", () => ({
+  __esModule: true,
+  useDebounce: (value: string) => value,
+}));
+
+describe("SearchInput", () => {
   beforeEach(() => {
-    onChange = vi.fn();
-    // Spy on addEventListener/removeEventListener
-    addSpy = vi.spyOn(HTMLInputElement.prototype, "addEventListener");
-    removeSpy = vi.spyOn(HTMLInputElement.prototype, "removeEventListener");
+    jest.clearAllMocks();
+    mockQuery.search = "initial";
+    mockQuery.page = 2;
   });
 
-  afterEach(() => {
-    cleanup();
-    vi.restoreAllMocks();
-  });
-
-  it("registers and removes the Escape keydown listener", () => {
-    const { unmount } = render(
-      <SearchInput value="test" onChange={onChange} />,
+  const renderComponent = () =>
+    render(
+      <MemoryRouter>
+        <SearchInput />
+      </MemoryRouter>
     );
 
-    // Verify that addEventListener was called
-    expect(addSpy).toHaveBeenCalledWith("keydown", expect.any(Function));
-
-    unmount();
-
-    // Verify that removeEventListener was called on unmount
-    expect(removeSpy).toHaveBeenCalledWith("keydown", expect.any(Function));
-  });
-
-  it("calls onChange and blurs the input on Escape key press", () => {
-    render(<SearchInput value="search" onChange={onChange} />);
+  it("updates local state and shows clear button", () => {
+    renderComponent();
     const input = screen.getByTestId("search-input") as HTMLInputElement;
-
-    // Spy on blur
-    const blurSpy = vi.spyOn(input, "blur");
-
-    // Simulate Escape key press
-    fireEvent.keyDown(input, { key: "Escape", code: "Escape" });
-
-    expect(onChange).toHaveBeenCalledWith("");
-    expect(blurSpy).toHaveBeenCalled();
+    fireEvent.change(input, { target: { value: "abc" } });
+    expect(input.value).toBe("abc");
+    expect(
+      screen.getByRole("button", { name: /clear search/i })
+    ).toBeInTheDocument();
   });
 
-  it("renders clear button when value is non-empty and clears on click", () => {
-    render(<SearchInput value="abc" onChange={onChange} />);
-    const clearButton = screen.getByRole("button", { name: /clear search/i });
+  it("clears and blurs the input when Escape is pressed", () => {
+    renderComponent();
+    const input = screen.getByTestId("search-input") as HTMLInputElement;
+    fireEvent.change(input, { target: { value: "xyz" } });
+    input.focus();
+    fireEvent.keyDown(input, { key: "Escape" });
+    expect(input.value).toBe("");
+    expect(document.activeElement).not.toBe(input);
+  });
 
-    expect(clearButton).toBeInTheDocument();
-
-    fireEvent.click(clearButton);
-    expect(onChange).toHaveBeenCalledWith("");
+  it("clears the input when the clear button (×) is clicked", () => {
+    renderComponent();
+    const input = screen.getByTestId("search-input") as HTMLInputElement;
+    fireEvent.change(input, { target: { value: "hello" } });
+    fireEvent.click(
+      screen.getByRole("button", { name: /clear search/i })
+    );
+    expect(input.value).toBe("");
   });
 });
