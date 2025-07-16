@@ -6,7 +6,10 @@ import { useAppDispatch } from "../../hooks/redux-hook";
 import { useTrackQueryParams } from "../../hooks/useTrackQueryParams";
 
 import { createTrack } from "../../features/tracks/trackSlice";
-import { selectCreateModalOpen, closeCreateModal } from "../../features/ui/modalSlice";
+import {
+  selectCreateModalOpen,
+  closeCreateModal,
+} from "../../features/ui/modalSlice";
 import TrackForm from "../TrackForm/TrackForm";
 import ToastMessage from "../UI/ToastMessage/ToastMessage";
 import ModalWrapper from "../UI/ModalWrapper/ModalWrapper";
@@ -24,7 +27,7 @@ const TrackCreateModal: React.FC = () => {
   const handleSubmit = async (data: TrackFormSchemaType) => {
     const titleLower = data.title.trim().toLowerCase();
     const isDuplicate = tracks.some(
-      (t) => t.title.trim().toLowerCase() === titleLower
+      (t) => t.title.trim().toLowerCase() === titleLower,
     );
     if (isDuplicate) {
       toast.error("A track with that name already exists!");
@@ -44,20 +47,28 @@ const TrackCreateModal: React.FC = () => {
       setParams({ page: 1 });
       dispatch(closeCreateModal());
       toast.success(
-        <ToastMessage message="Track successfully added!" type="success" />
+        <ToastMessage message="Track successfully added!" type="success" />,
       );
     } catch (err) {
       console.error(err);
       toast.error(
-        <ToastMessage message="Failed to create track" type="error" />
+        <ToastMessage message="Failed to create track" type="error" />,
       );
     }
   };
 
   return (
-    <ModalWrapper onClose={() => dispatch(closeCreateModal())} aria-label="Create a new track" aria-modal="true">
+    <ModalWrapper
+      onClose={() => dispatch(closeCreateModal())}
+      aria-label="Create a new track"
+      aria-modal="true"
+    >
       <h2 data-testid="tracks-header">Create a new track</h2>
-      <TrackForm submitLabel="Create" onSubmit={handleSubmit} onCancel={() => dispatch(closeCreateModal())} />
+      <TrackForm
+        submitLabel="Create"
+        onSubmit={handleSubmit}
+        onCancel={() => dispatch(closeCreateModal())}
+      />
     </ModalWrapper>
   );
 };

@@ -7,9 +7,7 @@ interface Props {
   tracks: Track[];
 }
 
-const TrackListContent: React.FC<Props> = ({
-  tracks,
-}) => {
+const TrackListContent: React.FC<Props> = ({ tracks }) => {
   if (tracks.length === 0) {
     return <p className={styles.noResults}>Nothing found</p>;
   }
@@ -17,9 +15,7 @@ const TrackListContent: React.FC<Props> = ({
   return (
     <ul className={`${styles.list} ${styles.fadeIn}`}>
       {tracks.map((track) => {
-        return (
-          <TrackItem track={track} key={track.id} />
-        );
+        return <TrackItem track={track} key={track.id} />;
       })}
     </ul>
   );

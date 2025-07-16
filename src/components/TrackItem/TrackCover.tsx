@@ -9,7 +9,7 @@ interface Props {
 
 const TrackCover: React.FC<Props> = ({ src, alt }) => (
   <img
-    src={src || coverImage}
+    src={src ?? coverImage}
     alt={alt || "Track cover"}
     role="img"
     aria-label={alt ? undefined : "Default track cover"}

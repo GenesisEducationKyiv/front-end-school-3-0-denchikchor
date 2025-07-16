@@ -8,11 +8,11 @@ import {
 } from "./features/ui/modalSlice";
 import TrackList from "./components/TrackList/TrackList";
 
-const TrackCreateModal = lazy(() =>
-  import("./components/TrackCreateModal/TrackCreateModal")
+const TrackCreateModal = lazy(
+  () => import("./components/TrackCreateModal/TrackCreateModal"),
 );
-const TrackEditModal = lazy(() =>
-  import("./components/TrackEditModal/TrackEditModal")
+const TrackEditModal = lazy(
+  () => import("./components/TrackEditModal/TrackEditModal"),
 );
 
 function App() {
@@ -33,7 +33,7 @@ function App() {
         </Suspense>
       )}
 
-      {isEditModalOpen && (
+      {isEditModalOpen !== null && (
         <Suspense fallback={<Preloader />}>
           <TrackEditModal />
         </Suspense>

@@ -1,17 +1,11 @@
-import {
-  render,
-  screen,
-  fireEvent,
-} from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import TrackForm from "../TrackForm";
 import { vi } from "vitest";
 
 vi.mock("../../GenreSelector/GenreSelector", () => ({
   __esModule: true,
   default: ({ selected }: { selected: string[] }) => (
-    <div data-testid="genre-selector">
-      Genres: {selected.join(", ")}
-    </div>
+    <div data-testid="genre-selector">Genres: {selected.join(", ")}</div>
   ),
 }));
 
@@ -29,10 +23,7 @@ describe("TrackForm", () => {
 
   it("renders inputs and submits valid form", async () => {
     render(
-      <TrackForm
-        {...defaultProps}
-        initialValues={{ genres: ["rock"] }}
-      />
+      <TrackForm {...defaultProps} initialValues={{ genres: ["rock"] }} />,
     );
 
     fireEvent.change(screen.getByTestId("input-title"), {
@@ -44,7 +35,7 @@ describe("TrackForm", () => {
 
     fireEvent.click(screen.getByTestId("submit-button"));
 
-    const called = await screen.findByTestId("track-form"); 
+    const called = await screen.findByTestId("track-form");
 
     expect(defaultProps.onSubmit).toHaveBeenCalledWith({
       title: "Test Track",
@@ -57,10 +48,7 @@ describe("TrackForm", () => {
 
   it("shows validation errors if title or artist are empty", async () => {
     render(
-      <TrackForm
-        {...defaultProps}
-        initialValues={{ genres: ["rock"] }}
-      />
+      <TrackForm {...defaultProps} initialValues={{ genres: ["rock"] }} />,
     );
 
     fireEvent.click(screen.getByTestId("submit-button"));

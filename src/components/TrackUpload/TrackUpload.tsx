@@ -3,7 +3,10 @@ import { useSelector } from "react-redux";
 
 import styles from "./TrackUpload.module.css";
 import { RootState } from "../../store";
-import { removeTrackFile, uploadTrackFile } from "../../features/tracks/trackSlice";
+import {
+  removeTrackFile,
+  uploadTrackFile,
+} from "../../features/tracks/trackSlice";
 import Button from "../UI/Button/Button";
 import { toast } from "react-toastify";
 import { useAppDispatch } from "../../hooks/redux-hook";
@@ -21,23 +24,16 @@ const TrackUpload: React.FC<Props> = ({ trackId }) => {
   const [showConfirm, setShowConfirm] = useState(false);
 
   const track = useSelector((state: RootState) =>
-    state.tracks.items.find((t) => t.id === trackId)
+    state.tracks.items.find((t) => t.id === trackId),
   );
 
   if (!track) return null;
 
-  const handleFileChange = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const validTypes = [
-      "audio/mpeg",
-      "audio/wav",
-      "audio/x-wav",
-      "audio/mp3",
-    ];
+    const validTypes = ["audio/mpeg", "audio/wav", "audio/x-wav", "audio/mp3"];
     if (!validTypes.includes(file.type)) {
       alert("Invalid file type. Allowed: MP3, WAV.");
       return;
@@ -53,12 +49,12 @@ const TrackUpload: React.FC<Props> = ({ trackId }) => {
     try {
       await dispatch(uploadTrackFile({ id: trackId, file })).unwrap();
       toast.success(
-        <ToastMessage message="File successfully uploaded!" type="success" />
+        <ToastMessage message="File successfully uploaded!" type="success" />,
       );
     } catch (err) {
       console.error("Upload error:", err);
       toast.error(
-        <ToastMessage message="Error while uploading file" type="error" />
+        <ToastMessage message="Error while uploading file" type="error" />,
       );
     } finally {
       setUploading(false);

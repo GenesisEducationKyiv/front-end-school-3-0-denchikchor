@@ -5,7 +5,11 @@ import { toast } from "react-toastify";
 import ToastMessage from "../UI/ToastMessage/ToastMessage";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../store";
-import { selectAllTracks, deleteTrack, fetchTracks } from "../../features/tracks/trackSlice";
+import {
+  selectAllTracks,
+  deleteTrack,
+  fetchTracks,
+} from "../../features/tracks/trackSlice";
 import { useTrackSelection } from "../../hooks/useTrackSelection";
 import { useTrackQueryParams } from "../../hooks/useTrackQueryParams";
 
@@ -27,7 +31,7 @@ const TrackBulkActions: React.FC = () => {
   const [showConfirm, setShowConfirm] = useState(false);
 
   const onSelectAllClick = () => {
-    const ids = allTracks.map(t => t.id);
+    const ids = allTracks.map((t) => t.id);
     handleSelectAll(ids);
   };
 
@@ -48,7 +52,11 @@ const TrackBulkActions: React.FC = () => {
   };
 
   return (
-    <div className={styles.wrapper} role="region" aria-label="Bulk selection controls">
+    <div
+      className={styles.wrapper}
+      role="region"
+      aria-label="Bulk selection controls"
+    >
       <button
         onClick={toggleSelectionMode}
         className={styles.button}

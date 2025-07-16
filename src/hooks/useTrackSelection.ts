@@ -1,12 +1,12 @@
 import { useAppDispatch } from "./redux-hook";
 import { deleteTrack, fetchTracks } from "../features/tracks/trackSlice";
-import { 
-  toggleSelectionMode, 
-  toggleTrackSelection, 
-  selectSelectionMode, 
-  selectSelectedIds, 
+import {
+  toggleSelectionMode,
+  toggleTrackSelection,
+  selectSelectionMode,
+  selectSelectedIds,
   clearSelection,
-  selectAll as selectAllTracksIds
+  selectAll as selectAllTracksIds,
 } from "../features/bulk-selection/selectionSlice";
 import type { TracksQueryParams } from "../features/tracks/types";
 import { useSelector } from "react-redux";
@@ -39,7 +39,9 @@ export const useTrackSelection = () => {
     // Delete each track
     await Promise.all(ids.map((id) => dispatch(deleteTrack(id)).unwrap()));
     // Refetch tracks
-    await dispatch(fetchTracks(params)).unwrap().catch((err) => console.error(err));
+    await dispatch(fetchTracks(params))
+      .unwrap()
+      .catch((err) => console.error(err));
     // Clear selection and exit selection mode
     dispatch(clearSelection());
     dispatch(toggleSelectionMode());

@@ -16,7 +16,7 @@ const Header: React.FC = () => {
       aria-label="Tracks page header"
     >
       <div className={styles.left}>
-        <Logo className={styles.logo} aria-label="Music App logo" role="img"/>
+        <Logo className={styles.logo} aria-label="Music App logo" role="img" />
       </div>
 
       <div className={styles.center}>

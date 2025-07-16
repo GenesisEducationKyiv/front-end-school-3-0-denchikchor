@@ -11,9 +11,6 @@ import {
   removeTrackFile as apiRemoveTrackFile,
 } from "../../api/tracks";
 import type { ApiError } from "../../api/apiErrors";
-import type { RootState } from "../../store";
-
-
 
 /**
  * Async thunk to fetch tracks with support for filtering, sorting, and pagination.
@@ -97,16 +94,13 @@ export const uploadTrackFile = createAsyncThunk<
   Track,
   { id: string; file: File },
   { rejectValue: ApiError }
->(
-  "tracks/uploadTrackFile",
-  async ({ id, file }, { rejectWithValue }) => {
-    const result = await apiUploadTrackFile(id, file);
-    if (result.isErr()) {
-      return rejectWithValue(result.error);
-    }
-    return result.value;
+>("tracks/uploadTrackFile", async ({ id, file }, { rejectWithValue }) => {
+  const result = await apiUploadTrackFile(id, file);
+  if (result.isErr()) {
+    return rejectWithValue(result.error);
   }
-);
+  return result.value;
+});
 
 /**
  * Async thunk to remove the audio file from a specific track.

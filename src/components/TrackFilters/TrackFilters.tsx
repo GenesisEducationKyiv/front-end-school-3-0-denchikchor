@@ -7,7 +7,7 @@ import type { RootState } from "../../store";
 const TrackFilters: React.FC = () => {
   const { query: params, setParams } = useTrackQueryParams();
   const genres = useSelector((state: RootState) => state.genres.items);
-  const selectedGenre = params.genre || "";
+  const selectedGenre = params.genre ?? "";
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setParams({ genre: e.target.value || undefined, page: 1 });
@@ -35,7 +35,11 @@ const TrackFilters: React.FC = () => {
           viewBox="0 0 12 8"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <polyline points="1,1 6,6 11,1" strokeWidth="2" strokeLinecap="round" />
+          <polyline
+            points="1,1 6,6 11,1"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
         </svg>
       </div>
     </div>

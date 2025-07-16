@@ -4,8 +4,15 @@ import { toast } from "react-toastify";
 
 import { useAppDispatch } from "../../hooks/redux-hook";
 
-import { selectEditTrackId, closeEditModal } from "../../features/ui/modalSlice";
-import { selectTrackById, editTrack, deleteTrack } from "../../features/tracks/trackSlice";
+import {
+  selectEditTrackId,
+  closeEditModal,
+} from "../../features/ui/modalSlice";
+import {
+  selectTrackById,
+  editTrack,
+  deleteTrack,
+} from "../../features/tracks/trackSlice";
 import TrackForm from "../TrackForm/TrackForm";
 import ModalWrapper from "../UI/ModalWrapper/ModalWrapper";
 import ConfirmDialog from "../UI/ConfirmDialog/ConfirmDialog";
@@ -14,7 +21,6 @@ import { TrackFormSchema, TrackFormSchemaType } from "../../schemas/track";
 import type { RootState } from "../../store";
 
 import styles from "./TrackEditModal.module.css";
-
 
 const TrackEditModal: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -42,27 +48,29 @@ const TrackEditModal: React.FC = () => {
       };
       await dispatch(editTrack(payload)).unwrap();
       toast.success(
-        <ToastMessage message="Track successfully updated!" type="success" />
+        <ToastMessage message="Track successfully updated!" type="success" />,
       );
       dispatch(closeEditModal());
     } catch (err) {
       console.error(err);
       toast.error(
-        <ToastMessage message="Error while editing track" type="error" />
+        <ToastMessage message="Error while editing track" type="error" />,
       );
     }
   };
 
   const handleDelete = async () => {
     await dispatch(deleteTrack(track.id)).unwrap();
-    toast.success(
-      <ToastMessage message="Track deleted" type="success" />
-    );
+    toast.success(<ToastMessage message="Track deleted" type="success" />);
     dispatch(closeEditModal());
   };
 
   return (
-    <ModalWrapper onClose={() => dispatch(closeEditModal())} aria-label="Edit track" aria-modal="true">
+    <ModalWrapper
+      onClose={() => dispatch(closeEditModal())}
+      aria-label="Edit track"
+      aria-modal="true"
+    >
       <div className={styles.header}>
         <h2>Edit track</h2>
         <button

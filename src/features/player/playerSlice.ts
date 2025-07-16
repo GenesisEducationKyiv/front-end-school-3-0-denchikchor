@@ -35,15 +35,12 @@ const playerSlice = createSlice({
 
 export const { togglePlay, trackEnded } = playerSlice.actions;
 
-export const selectActiveTrackId = (state: RootState) => state.player.activeTrackId;
-export const selectIsPlaying     = (state: RootState) => state.player.isPlaying;
+export const selectActiveTrackId = (state: RootState) =>
+  state.player.activeTrackId;
+export const selectIsPlaying = (state: RootState) => state.player.isPlaying;
 
 //Async thunk to play next track based on current playlist order
-export const playNext = createAsyncThunk<
-  void,
-  void,
-  { state: RootState }
->(
+export const playNext = createAsyncThunk<void, void, { state: RootState }>(
   "player/playNext",
   async (_, { getState, dispatch }) => {
     const state = getState();
@@ -53,7 +50,7 @@ export const playNext = createAsyncThunk<
     const idx = ids.findIndex((id) => id === currentId);
     if (idx >= 0 && idx + 1 < ids.length) {
       dispatch(togglePlay({ id: ids[idx + 1] }));
-    } else if (currentId) {
+    } else if (currentId !== null) {
       dispatch(trackEnded({ id: currentId }));
     }
   },

@@ -46,9 +46,11 @@ export const {
   clearSelection,
 } = selectionSlice.actions;
 
-// Selector to read selection mode flag 
-export const selectSelectionMode = (state: RootState) => state.selection.selectionMode;
+// Selector to read selection mode flag
+export const selectSelectionMode = (state: RootState) =>
+  state.selection.selectionMode;
 // Selector to read selected track IDs
-export const selectSelectedIds    = (state: RootState) => state.selection.selectedIds;
+export const selectSelectedIds = (state: RootState) =>
+  state.selection.selectedIds;
 
 export default selectionSlice.reducer;

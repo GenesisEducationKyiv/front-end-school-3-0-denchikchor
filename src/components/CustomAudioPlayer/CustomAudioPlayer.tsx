@@ -13,7 +13,7 @@ interface Props {
 const CustomAudioPlayer: React.FC<Props> = ({
   src,
   onEndedNext,
-  isActive,
+  isActive = false,
   onTogglePlay,
 }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -159,7 +159,12 @@ const CustomAudioPlayer: React.FC<Props> = ({
       ) : (
         <div className={styles.container}>
           <div className={styles.controls}>
-            <button onClick={onTogglePlay} className={styles.button} aria-pressed={isActive} aria-label={isActive ? "Pause playback" : "Play playback"}>
+            <button
+              onClick={onTogglePlay}
+              className={styles.button}
+              aria-pressed={isActive}
+              aria-label={isActive ? "Pause playback" : "Play playback"}
+            >
               {isActive ? (
                 <PauseIcon className={styles.icon} />
               ) : (

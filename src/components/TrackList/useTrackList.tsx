@@ -29,7 +29,7 @@ export function useTrackList() {
           <ToastMessage
             message={`Failed to load genres: ${err.message}`}
             type="error"
-          />
+          />,
         );
       });
   }, [dispatch]);
@@ -42,15 +42,17 @@ export function useTrackList() {
           <ToastMessage
             message={`Failed to load tracks: ${err.message}`}
             type="error"
-          />
+          />,
         );
       });
   }, [dispatch, params]);
 
   const onDelete = useCallback(
-    (id: string) => dispatch(fetchTracks(params)).unwrap().then(() => {
-    }),
-    [dispatch, params]
+    (id: string) =>
+      dispatch(fetchTracks(params))
+        .unwrap()
+        .then(() => {}),
+    [dispatch, params],
   );
 
   return {
@@ -61,7 +63,7 @@ export function useTrackList() {
     toggleSelectionMode,
     toggleTrackSelection,
     handleSelectAll,
-    onBulkDelete: ( ) => handleBulkDelete(selectedTracks, params),
+    onBulkDelete: () => handleBulkDelete(selectedTracks, params),
     onDelete,
     onPageChange: (page: number) => setParams({ page }),
   };

@@ -4,8 +4,8 @@ import { useTrackQueryParams } from "../../hooks/useTrackQueryParams";
 
 const SortSelect: React.FC = () => {
   const { query: params, setParams } = useTrackQueryParams();
-  const value = params.sort || "";
-  const direction = params.order || "asc";
+  const value = params.sort ?? "";
+  const direction = params.order ?? "asc";
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setParams({ sort: e.target.value as "" | "title" | "artist", page: 1 });
@@ -34,17 +34,22 @@ const SortSelect: React.FC = () => {
           xmlns="http://www.w3.org/2000/svg"
           aria-hidden="true"
         >
-          <polyline points="1,1 6,6 11,1" strokeWidth="2" strokeLinecap="round" />
+          <polyline
+            points="1,1 6,6 11,1"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
         </svg>
       </div>
-      <button 
-        onClick={handleToggleDirection} 
+      <button
+        onClick={handleToggleDirection}
         className={styles.toggleButton}
         aria-label={
-        direction === "asc"
-          ? "Change to descending order"
-          : "Change to ascending order"
-      }>
+          direction === "asc"
+            ? "Change to descending order"
+            : "Change to ascending order"
+        }
+      >
         {direction === "asc" ? "↑" : "↓"}
       </button>
     </div>

@@ -45,6 +45,7 @@ export const {
 // Selector to get the currently editing track ID (or null if closed).
 export const selectEditTrackId = (state: RootState) => state.modal.editTrackId;
 //Selector to get create-track modal open flag.
-export const selectCreateModalOpen = (state: RootState) => state.modal.createModalOpen;
+export const selectCreateModalOpen = (state: RootState) =>
+  state.modal.createModalOpen;
 
 export default modalSlice.reducer;

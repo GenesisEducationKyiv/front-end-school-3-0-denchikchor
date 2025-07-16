@@ -30,7 +30,11 @@ const TrackActions: React.FC<Props> = ({ trackId }) => {
 
   return (
     <div className={styles.mainActions}>
-      <button onClick={handleEdit} data-testid={`edit-track-${trackId}`} aria-label="Edit track">
+      <button
+        onClick={handleEdit}
+        data-testid={`edit-track-${trackId}`}
+        aria-label="Edit track"
+      >
         <Dots aria-hidden="true" className={styles.dots} />
       </button>
       {selectionMode && (

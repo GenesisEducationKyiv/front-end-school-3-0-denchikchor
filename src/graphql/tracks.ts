@@ -2,21 +2,21 @@ import { gql } from "@apollo/client";
 
 export const GET_TRACKS = gql`
   query GetTracks(
-    $page: Int, 
-    $limit: Int, 
-    $sort: String, 
-    $order: String, 
-    $search: String, 
-    $genre: String, 
+    $page: Int
+    $limit: Int
+    $sort: String
+    $order: String
+    $search: String
+    $genre: String
     $artist: String
   ) {
     tracks(
-      page: $page, 
-      limit: $limit, 
-      sort: $sort, 
-      order: $order, 
-      search: $search, 
-      genre: $genre,
+      page: $page
+      limit: $limit
+      sort: $sort
+      order: $order
+      search: $search
+      genre: $genre
       artist: $artist
     ) {
       data {
