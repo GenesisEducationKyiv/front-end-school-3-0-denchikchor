@@ -19,13 +19,6 @@ A modern, responsive web application for managing and playing your music collect
 
 ## 🔧 Setup & Optimization
 
--   **Environment Variables**
-    Create a `.env` in project root (ignored by Git). Prefix all keys with `VITE_`, e.g.:
-
-    ```dotenv
-    VITE_API_URL=https://api.example.com/graphql
-    ```
-
 -   **Bundle Analysis**
     Install `rollup-plugin-visualizer` and add to `vite.config.ts`:
 
