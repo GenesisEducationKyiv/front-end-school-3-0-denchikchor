@@ -1,0 +1,15 @@
+# client
+/client/node_modules
+/client/dist
+/client/test-results/
+/client/playwright-report/
+/client/client/blob-report/
+/playwright/.cache/
+
+# server
+/server/node_modules
+/server/build
+
+
+.env
+.DS_Store
